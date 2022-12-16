@@ -31,17 +31,4 @@ public class UserService extends AuthenticatedApiService<User>
         return users;
     }
 
-    public List<User> getAllUsersExceptCurrentUser(int id)
-    {
-        List<User> users = getAllUsers();
-        List<User> usersExceptCurrent = new ArrayList<>();
-
-        for (User user : users) {
-            if (user.getId() != id) {
-                usersExceptCurrent.add(user);
-            }
-        }
-
-        return usersExceptCurrent;
-    }
 }

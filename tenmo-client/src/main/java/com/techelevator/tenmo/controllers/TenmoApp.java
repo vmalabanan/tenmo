@@ -154,20 +154,19 @@ public class TenmoApp
 
     private void sendBucks()
     {
-        // TODO Auto-generated method stub
+        displayUsers();
 
     }
 
     private void requestBucks()
     {
-        displayUsers();
 
     }
 
     private void displayUsers()
     {
         var page = new UserListPage();
-        var users = userService.getAllUsersExceptCurrentUser(currentUser.getUser().getId());
+        var users = userService.getAllUsers();
         page.displayUsers(users);
 
     }

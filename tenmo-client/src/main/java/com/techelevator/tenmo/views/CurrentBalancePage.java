@@ -9,6 +9,6 @@ public class CurrentBalancePage extends BasePage {
     public void displayCurrentBalance(BigDecimal balance){
 
         printHeader("Current Balance");
-        print(String.valueOf(balance));
+        printLine(String.valueOf(balance));
     }
 }

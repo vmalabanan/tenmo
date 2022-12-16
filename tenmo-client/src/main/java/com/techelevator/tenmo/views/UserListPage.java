@@ -10,7 +10,7 @@ public class UserListPage extends BasePage {
         printHeader("Users");
 
         users.forEach(user -> {
-            print(user.getUsername());
+            printLine(user.getUsername());
         });
     }
 }
