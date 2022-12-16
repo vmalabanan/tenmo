@@ -5,7 +5,10 @@ import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticatedApiService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AccountService;
+import com.techelevator.tenmo.services.UserService;
 import com.techelevator.tenmo.views.CurrentBalancePage;
+import com.techelevator.tenmo.views.UserCredentialsPage;
+import com.techelevator.tenmo.views.UserListPage;
 import com.techelevator.tenmo.views.UserOutput;
 import org.apiguardian.api.API;
 
@@ -19,9 +22,9 @@ public class TenmoApp
     private final AccountService accountService = new AccountService();
 
     private AuthenticatedUser currentUser;
+    private UserService userService = new UserService();
 
     public TenmoApp() {
-        String API_BASE_URL = "http://localhost:8080/";
         AuthenticatedApiService.setBaseUrl(API_BASE_URL);
     }
 
@@ -74,11 +77,19 @@ public class TenmoApp
 
     private void handleLogin()
     {
-        UserCredentials credentials = userOutput.promptForCredentials();
-        currentUser = authenticationService.login(credentials);
-        if (currentUser == null)
+        var page = new UserCredentialsPage();
+        UserCredentials credentials = page.getUserCredential("login");
+        var authenticatedUser = authenticationService.login(credentials);
+
+        if (authenticatedUser != null)
         {
-            userOutput.printErrorMessage();
+            currentUser = authenticatedUser;
+            AuthenticatedApiService.setAuthToken(currentUser.getToken());
+        }
+        else
+        {
+            page.printHeader("Error");
+            page.printRedLine("The login credentials were incorrect");
         }
     }
 
@@ -149,7 +160,15 @@ public class TenmoApp
 
     private void requestBucks()
     {
-        // TODO Auto-generated method stub
+        displayUsers();
+
+    }
+
+    private void displayUsers()
+    {
+        var page = new UserListPage();
+        var users = userService.getAllUsersExceptCurrentUser(currentUser.getUser().getId());
+        page.displayUsers(users);
 
     }
 

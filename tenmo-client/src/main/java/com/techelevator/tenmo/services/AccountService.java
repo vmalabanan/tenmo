@@ -17,11 +17,9 @@ public class AccountService extends AuthenticatedApiService<Account> {
         {
             var url = baseUrl + "balance";
             var entity = makeAuthEntity();
-            ResponseEntity<Account> response = restTemplate.exchange(url, HttpMethod.GET, entity, Account.class);
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(url, HttpMethod.GET, entity, BigDecimal.class);
 
-            if (response.getBody().getBalance() != null) {
-                balance = response.getBody().getBalance();
-            }
+            balance = response.getBody();
         }
         catch(Exception ex)
         {
