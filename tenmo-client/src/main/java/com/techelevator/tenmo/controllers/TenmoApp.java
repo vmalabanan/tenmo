@@ -2,10 +2,12 @@ package com.techelevator.tenmo.controllers;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.UserCredentials;
+import com.techelevator.tenmo.services.AuthenticatedApiService;
 import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.BalanceService;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.views.CurrentBalancePage;
 import com.techelevator.tenmo.views.UserOutput;
+import org.apiguardian.api.API;
 
 public class TenmoApp
 {
@@ -14,9 +16,14 @@ public class TenmoApp
 
     private final UserOutput userOutput = new UserOutput();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-    private final BalanceService balanceService = new BalanceService();
+    private final AccountService accountService = new AccountService();
 
     private AuthenticatedUser currentUser;
+
+    public TenmoApp() {
+        String API_BASE_URL = "http://localhost:8080/";
+        AuthenticatedApiService.setBaseUrl(API_BASE_URL);
+    }
 
     public void run()
     {
@@ -117,7 +124,7 @@ public class TenmoApp
     private void viewCurrentBalance()
     {
         var page = new CurrentBalancePage();
-        var balance = balanceService.getCurrentBalance();
+        var balance = accountService.getCurrentBalance();
         page.displayCurrentBalance(balance);
 
     }

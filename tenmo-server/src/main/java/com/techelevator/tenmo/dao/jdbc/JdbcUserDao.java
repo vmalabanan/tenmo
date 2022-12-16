@@ -1,5 +1,6 @@
-package com.techelevator.tenmo.dao;
+package com.techelevator.tenmo.dao.jdbc;
 
+import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
