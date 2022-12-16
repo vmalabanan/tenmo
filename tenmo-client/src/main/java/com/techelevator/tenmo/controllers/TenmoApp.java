@@ -113,7 +113,7 @@ public class TenmoApp
 
     private void viewCurrentBalance()
     {
-        // TODO Auto-generated method stub
+
 
     }
 
