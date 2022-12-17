@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controllers;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticatedApiService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -10,7 +11,6 @@ import com.techelevator.tenmo.views.CurrentBalancePage;
 import com.techelevator.tenmo.views.UserCredentialsPage;
 import com.techelevator.tenmo.views.UserListPage;
 import com.techelevator.tenmo.views.UserOutput;
-import org.apiguardian.api.API;
 
 public class TenmoApp
 {
@@ -155,7 +155,6 @@ public class TenmoApp
     private void sendBucks()
     {
         displayUsers();
-
     }
 
     private void requestBucks()
@@ -167,7 +166,7 @@ public class TenmoApp
     {
         var page = new UserListPage();
         var users = userService.getAllUsers();
-        page.displayUsers(users);
+        Transfer transfer = page.getTransferAccountDetails(users);
 
     }
 
