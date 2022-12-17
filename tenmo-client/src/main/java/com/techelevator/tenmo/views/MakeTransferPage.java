@@ -6,9 +6,9 @@ import com.techelevator.tenmo.models.User;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class UserListPage extends BasePage {
+public class MakeTransferPage extends BasePage {
 
-    public Transfer getTransferAccountDetails(List<User> users){
+    public Transfer getTransferDetails(List<User> users){
         printHeader("Users");
         printLine("ID\t\t Name");
         users.forEach(user -> {

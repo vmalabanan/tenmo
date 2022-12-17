@@ -3,13 +3,10 @@ package com.techelevator.tenmo.controllers;
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
-import com.techelevator.tenmo.services.AuthenticatedApiService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.UserService;
+import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.CurrentBalancePage;
 import com.techelevator.tenmo.views.UserCredentialsPage;
-import com.techelevator.tenmo.views.UserListPage;
+import com.techelevator.tenmo.views.MakeTransferPage;
 import com.techelevator.tenmo.views.UserOutput;
 
 public class TenmoApp
@@ -23,6 +20,7 @@ public class TenmoApp
 
     private AuthenticatedUser currentUser;
     private UserService userService = new UserService();
+    private TransferService transferService = new TransferService();
 
     public TenmoApp() {
         AuthenticatedApiService.setBaseUrl(API_BASE_URL);
@@ -154,7 +152,11 @@ public class TenmoApp
 
     private void sendBucks()
     {
-        displayUsers();
+        var page = new MakeTransferPage();
+        var users = userService.getAllUsers();
+        Transfer transfer = page.getTransferDetails(users);
+        transfer.setTransferTypeId(1);
+        transferService.makeTransfer(transfer);
     }
 
     private void requestBucks()
@@ -162,12 +164,12 @@ public class TenmoApp
 
     }
 
-    private void displayUsers()
-    {
-        var page = new UserListPage();
-        var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferAccountDetails(users);
-
-    }
+//    private void displayUsers()
+//    {
+//        var page = new MakeTransferPage();
+//        var users = userService.getAllUsers();
+//        Transfer transfer = page.getTransferDetails(users);
+//
+//    }
 
 }
