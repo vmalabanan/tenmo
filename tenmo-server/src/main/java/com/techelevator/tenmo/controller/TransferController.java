@@ -1,17 +1,14 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/transfer")
@@ -19,7 +16,6 @@ import java.security.Principal;
 public class TransferController {
     private TransferDao transferDao;
     private UserDao userDao;
-//    private AccountDao accountDao; // should this be here or in JdbcTransferDao?
 
     @Autowired
     public TransferController(TransferDao transferDao, UserDao userDao) {
@@ -33,5 +29,12 @@ public class TransferController {
         int id = userDao.findIdByUsername(principal.getName());
         // make the transfer and return the Transfer object
         return transferDao.makeTransfer(transfer, id);
+    }
+
+    @GetMapping
+    public List<Transfer> getAllTransfers(Principal principal) {
+        int id = userDao.findIdByUsername(principal.getName());
+
+        return transferDao.getAllTransfers(id);
     }
 }

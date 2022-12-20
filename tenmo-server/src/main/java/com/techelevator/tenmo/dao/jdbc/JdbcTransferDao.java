@@ -5,9 +5,12 @@ import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao
@@ -57,6 +60,45 @@ public class JdbcTransferDao implements TransferDao
         return transfer;
     }
 
+    @Override
+    public List<Transfer> getAllTransfers(int id) {
+        List<Transfer> transfers = new ArrayList<>();
+
+        String sql = "SELECT t.transfer_id " +
+                ", tu.username AS username_from " +
+                ", tu.user_id AS user_id_from " +
+                ", t.account_from " +
+                ", tu2.username AS username_to " +
+                ", tu2.user_id AS user_id_to " +
+                ", t.account_to " +
+                ", tt.transfer_type_desc " +
+                ", t.transfer_type_id " +
+                ", ts.transfer_status_desc " +
+                ", t.transfer_status_id " +
+                ", t.amount " +
+                "FROM transfer AS t " +
+                "JOIN account AS a " +
+                "ON t.account_from = a.account_id " +
+                "JOIN account AS a2 " +
+                "ON t.account_to = a2.account_id " +
+                "JOIN tenmo_user AS tu " +
+                "ON a.user_id = tu.user_id " +
+                "JOIN tenmo_user AS tu2 " +
+                "ON a2.user_id = tu2.user_id " +
+                "JOIN transfer_type AS tt " +
+                "ON t.transfer_type_id = tt.transfer_type_id " +
+                "JOIN transfer_status AS ts " +
+                "ON t.transfer_status_id = ts.transfer_status_id " +
+                "WHERE a.user_id = ? OR a2.user_id = ?; ";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
+        while (results.next()) {
+            transfers.add(mapRowToTransfer(results));
+        }
+
+        return transfers;
+    }
+
     // helper function
     private boolean isTransferValid(Transfer transfer, int id) {
         // check if:
@@ -85,6 +127,25 @@ public class JdbcTransferDao implements TransferDao
         transfer.setTransferStatusId(2); // 2 is for Approved
         transfer.setAccountFrom(accountFrom);
         transfer.setAccountTo(accountTo);
+    }
+
+    // helper function
+    private Transfer mapRowToTransfer(SqlRowSet results) {
+        Transfer transfer = new Transfer();
+        transfer.setTransferId(results.getInt("transfer_id"));
+        transfer.setTransferTypeId(results.getInt("transfer_type_id"));
+        transfer.setTransferStatusId(results.getInt("transfer_status_id"));
+        transfer.setAccountFrom(results.getInt("account_from")); // Do I need to set this?
+        transfer.setAccountTo(results.getInt("account_to")); // Do I need to set this? The client shouldn't see this info anyway
+        transfer.setAmount(results.getBigDecimal("amount"));
+        transfer.setTransferTypeDesc(results.getString("transfer_type_desc"));
+        transfer.setTransferStatusDesc(results.getString("transfer_status_desc"));
+        transfer.setUserIdFrom(results.getInt("user_id_from"));
+        transfer.setUserIdTo(results.getInt("user_id_to"));
+        transfer.setUsernameFrom(results.getString("username_from"));
+        transfer.setUsernameTo(results.getString("username_to"));
+
+        return transfer;
     }
 
 }

@@ -4,10 +4,9 @@ import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.*;
-import com.techelevator.tenmo.views.CurrentBalancePage;
-import com.techelevator.tenmo.views.UserCredentialsPage;
-import com.techelevator.tenmo.views.MakeTransferPage;
-import com.techelevator.tenmo.views.UserOutput;
+import com.techelevator.tenmo.views.*;
+
+import java.util.List;
 
 public class TenmoApp
 {
@@ -140,9 +139,22 @@ public class TenmoApp
 
     private void viewTransferHistory()
     {
-        // TODO Auto-generated method stub
+        var page = new ViewTransfersPage();
+        var transfers = transferService.getAllTransfers();
+        int transferId = page.displayAllTransfers(transfers, currentUser.getUser().getId());
 
+        if (transferId != 0) {
+            viewTransferDetails(transfers, transferId);
+        }
+
+        mainMenu();
     }
+
+    private void viewTransferDetails(List<Transfer> transfers, int transferId) {
+        var page = new ViewTransferDetailsPage();
+        page.displayTransferDetails(transfers, transferId);
+    }
+
 
     private void viewPendingRequests()
     {
@@ -165,12 +177,5 @@ public class TenmoApp
 
     }
 
-//    private void displayUsers()
-//    {
-//        var page = new MakeTransferPage();
-//        var users = userService.getAllUsers();
-//        Transfer transfer = page.getTransferDetails(users);
-//
-//    }
 
 }

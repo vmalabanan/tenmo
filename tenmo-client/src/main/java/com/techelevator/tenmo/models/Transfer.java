@@ -102,4 +102,21 @@ public class Transfer {
     public void setUsernameTo(String usernameTo) {
         this.usernameTo = usernameTo;
     }
+
+    @Override
+    public String toString() {
+        String str = transferId + "\t";
+
+        // if transfer is of type request
+        if (transferTypeId == 1) {
+            str += "From: " + usernameFrom;
+        }
+        else {
+            str += "To: " + usernameTo;
+        }
+
+        str += "\t" + amount; // need to format this as currency
+
+        return str;
+    }
 }
