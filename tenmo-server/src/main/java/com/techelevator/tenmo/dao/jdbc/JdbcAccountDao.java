@@ -39,8 +39,15 @@ public class JdbcAccountDao implements AccountDao {
                 "FROM account " +
                 "WHERE user_id = ?;";
 
-        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+        Integer accountId = null;
 
+        try {
+            accountId = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        } catch (Exception e) {
+            // TODO: Decide what to do here
+        }
+
+        return accountId;
     }
 
 

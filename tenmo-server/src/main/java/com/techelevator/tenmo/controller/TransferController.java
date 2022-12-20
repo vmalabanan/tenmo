@@ -31,7 +31,6 @@ public class TransferController {
     public Transfer makeTransfer(@RequestBody Transfer transfer, Principal principal) {
         // get id of logged-in user
         int id = userDao.findIdByUsername(principal.getName());
-
         // make the transfer and return the Transfer object
         return transferDao.makeTransfer(transfer, id);
     }

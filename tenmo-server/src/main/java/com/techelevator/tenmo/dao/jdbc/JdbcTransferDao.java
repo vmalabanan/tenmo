@@ -17,9 +17,10 @@ public class JdbcTransferDao implements TransferDao
     private AccountDao accountDao;
 
     @Autowired
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate)
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao)
     {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = accountDao;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class JdbcTransferDao implements TransferDao
     {
         // if transfer is not valid, set transferStatusId = 3 (rejected) and return the transfer.
         // Transaction will not be added to the transfer table
-        if (!isTransferValid(transfer)) {
+        if (!isTransferValid(transfer, id)) {
             transfer.setTransferStatusId(3);
             return transfer;
         }
@@ -35,31 +36,37 @@ public class JdbcTransferDao implements TransferDao
         // finish building the transfer object
         buildTransferObject(transfer, id);
 
-        String sql = "BEGIN TRANSACTION;\n" +
-                "UPDATE account SET balance = balance - ? WHERE account_id = ?;\n" +
-                "UPDATE account SET balance = balance + ? WHERE account_id = ?;\n" +
-                "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)\n" +
-                "VALUES (?, ?, ?, ?, ?);\n" +
+        String sql = "BEGIN TRANSACTION; " +
+                "UPDATE account SET balance = balance - ? WHERE account_id = ?; " +
+                "UPDATE account SET balance = balance + ? WHERE account_id = ?; " +
+                "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?, ?, ?, ?, ?); " +
                 "COMMIT;";
 
-        transfer = jdbcTemplate.queryForObject(sql, Transfer.class,
-                                               transfer.getAmount(), transfer.getAccountFrom(),
-                                               transfer.getAmount(), transfer.getAccountTo(),
-                                               transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+       jdbcTemplate.update(sql,
+                           transfer.getAmount(), transfer.getAccountFrom(),
+                           transfer.getAmount(), transfer.getAccountTo(),
+                           transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+
+        // TODO: Decide if we should set transferId attribute for the Transfer object once the above SQL query is run.
+        //  We'd need to run a separate SQL query for this because we can't do a returning clause from within a transaction.
+        //  One argument against setting transferId is that we don't do anything with this info.
+        //  But we do need some way to alert the client if the transaction didn't go through.
+        //  For example, if transferId == null, throw an exception
 
         return transfer;
     }
 
     // helper function
-    private boolean isTransferValid(Transfer transfer) {
+    private boolean isTransferValid(Transfer transfer, int id) {
         // check if:
         // userIdFrom != userIdTo,
         // amount > 0,
         // amount <= amount in userIdFrom's account,
         // userIdTo is valid
-        return (transfer.getUserIdFrom() != transfer.getUserIdTo()) &&
+        return (id != transfer.getUserIdTo()) &&
                 (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
-                (accountDao.getBalance(transfer.getUserIdFrom()).compareTo(transfer.getAmount()) >= 0) &&
+                (accountDao.getBalance(id).compareTo(transfer.getAmount()) >= 0) &&
                 (isUserIdToValid(transfer.getUserIdTo()));
     }
 
@@ -79,6 +86,5 @@ public class JdbcTransferDao implements TransferDao
         transfer.setAccountFrom(accountFrom);
         transfer.setAccountTo(accountTo);
     }
-
 
 }
