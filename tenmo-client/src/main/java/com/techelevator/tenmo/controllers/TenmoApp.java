@@ -152,11 +152,12 @@ public class TenmoApp
 
     private void sendBucks()
     {
+
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
         Transfer transfer = page.getTransferDetails(users);
-        transfer.setTransferTypeId(1);
-        transferService.makeTransfer(transfer);
+
+        transferService.makeTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
 
     private void requestBucks()

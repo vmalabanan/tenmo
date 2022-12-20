@@ -8,6 +8,8 @@ public class Transfer {
     private int transferStatusId;
     private int accountFrom;
     private int accountTo;
+    private int userIdFrom;
+    private int userIdTo;
     private BigDecimal amount;
 
     public int getTransferId() {
@@ -48,6 +50,22 @@ public class Transfer {
 
     public void setAccountTo(int accountTo) {
         this.accountTo = accountTo;
+    }
+
+    public int getUserIdFrom() {
+        return userIdFrom;
+    }
+
+    public void setUserIdFrom(int userIdFrom) {
+        this.userIdFrom = userIdFrom;
+    }
+
+    public int getUserIdTo() {
+        return userIdTo;
+    }
+
+    public void setUserIdTo(int userIdTo) {
+        this.userIdTo = userIdTo;
     }
 
     public BigDecimal getAmount() {

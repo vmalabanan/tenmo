@@ -21,7 +21,8 @@ public class MakeTransferPage extends BasePage {
         BigDecimal amount = BigDecimal.valueOf(getIntValue("Enter amount: "));
 
         transfer.setAmount(amount);
-        transfer.setUserId(id);
+        transfer.setUserIdTo(id);
+
 
         return transfer;
     }
