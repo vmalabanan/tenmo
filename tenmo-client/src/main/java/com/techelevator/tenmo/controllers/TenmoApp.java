@@ -167,14 +167,18 @@ public class TenmoApp
 
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetails(users);
+        Transfer transfer = page.getTransferDetailsSend(users);
 
-        transferService.makeTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
+        transferService.makeOrRequestTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
 
     private void requestBucks()
     {
+        var page = new MakeTransferPage();
+        var users = userService.getAllUsers();
+        Transfer transfer = page.getTransferDetailsRequest(users);
 
+        transferService.makeOrRequestTransfer(transfer);
     }
 
 

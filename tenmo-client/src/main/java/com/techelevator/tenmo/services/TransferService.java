@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class TransferService extends AuthenticatedApiService<Transfer>
 {
-    public Transfer makeTransfer(Transfer transfer)
+    public Transfer makeOrRequestTransfer(Transfer transfer)
     {
         Transfer newTransfer;
 

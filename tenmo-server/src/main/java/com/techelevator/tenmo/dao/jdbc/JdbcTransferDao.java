@@ -60,6 +60,7 @@ public class JdbcTransferDao implements TransferDao
         return transfer;
     }
 
+
     @Override
     public List<Transfer> getAllTransfers(int id) {
         List<Transfer> transfers = new ArrayList<>();
@@ -99,34 +100,83 @@ public class JdbcTransferDao implements TransferDao
         return transfers;
     }
 
+    @Override
+    public boolean requestTransfer(Transfer transfer, int id) {
+
+        // if transfer is not valid, set transferStatusId = 3 (rejected) and return the transfer.
+        // Transaction will not be added to the transfer table
+        if (!isTransferValid(transfer, id)) {
+            transfer.setTransferStatusId(3);
+            return false;
+        }
+
+        // finish building the transfer object
+        buildTransferObject(transfer, id);
+
+        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?, ?, ?, ?, ?); ";
+
+        jdbcTemplate.update(sql,
+                transfer.getAmount(), transfer.getAccountFrom(),
+                transfer.getAmount(), transfer.getAccountTo(),
+                transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+
+        return true;
+
+    }
+
     // helper function
     private boolean isTransferValid(Transfer transfer, int id) {
-        // check if:
-        // userIdFrom != userIdTo,
-        // amount > 0,
-        // amount <= amount in userIdFrom's account,
-        // userIdTo is valid
-        return (id != transfer.getUserIdTo()) &&
-                (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
-                (accountDao.getBalance(id).compareTo(transfer.getAmount()) >= 0) &&
-                (isUserIdToValid(transfer.getUserIdTo()));
+
+        if (transfer.getTransferTypeId() == 1) { // 1 is for requesting
+            // check if:
+            // userIdFrom != userIdTo,
+            // amount > 0,
+            // userIdFrom is valid
+            return (id != transfer.getUserIdFrom()) &&
+                    (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
+                    (isUserIdValid(transfer.getUserIdFrom()));
+        } else {
+            // check if:
+            // userIdFrom != userIdTo,
+            // amount > 0,
+            // amount <= amount in userIdFrom's account,
+            // userIdTo is valid
+            return (id != transfer.getUserIdTo()) &&
+                    (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
+                    (accountDao.getBalance(id).compareTo(transfer.getAmount()) >= 0) &&
+                    (isUserIdValid(transfer.getUserIdTo()));
+        }
+
     }
 
     // helper function to determine whether there is a matching accountId for userIdTo
-    private boolean isUserIdToValid(int userIdTo) {
-        return accountDao.getAccountId(userIdTo) != null;
+    private boolean isUserIdValid(int userId) {
+        return accountDao.getAccountId(userId) != null;
     }
 
     // helper function to finish building the Transfer object, since
-    // Transfer object from the client only contains userIdTo and amount
+    // Transfer object from the client only contains userIdTo or userIdFrom and amount
     private void buildTransferObject(Transfer transfer, int id) {
-        Integer accountFrom = accountDao.getAccountId(id);
-        Integer accountTo = accountDao.getAccountId(transfer.getUserIdTo());
-        transfer.setUserIdFrom(id);
-        transfer.setTransferTypeId(2); // 2 is for Send
-        transfer.setTransferStatusId(2); // 2 is for Approved
+        Integer accountTo;
+        Integer accountFrom;
+
+        if (transfer.getTransferTypeId() == 1) { // if the transfer is a request
+            accountTo = accountDao.getAccountId(id);
+            accountFrom = accountDao.getAccountId(transfer.getUserIdFrom());
+            transfer.setUserIdTo(id);
+            transfer.setTransferStatusId(1); // 1 is for Pending
+
+        } else {
+            accountFrom = accountDao.getAccountId(id);
+            accountTo = accountDao.getAccountId(transfer.getUserIdTo());
+            transfer.setUserIdFrom(id);
+            transfer.setTransferStatusId(2); // 2 is for Approved
+
+        }
         transfer.setAccountFrom(accountFrom);
         transfer.setAccountTo(accountTo);
+
     }
 
     // helper function
