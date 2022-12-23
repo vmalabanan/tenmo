@@ -56,7 +56,7 @@ public class UserOutput
 
     public UserCredentials promptForCredentials()
     {
-        String username = promptForString("Username: ");
+        String username = promptForString("Username: ").toLowerCase(); // usernames should be stored as lowercase only
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
     }

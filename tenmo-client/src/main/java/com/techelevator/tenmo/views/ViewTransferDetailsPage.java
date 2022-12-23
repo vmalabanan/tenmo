@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.views;
 
-import com.techelevator.tenmo.exceptions.IncorrectTransferIdException;
+import com.techelevator.tenmo.models.exceptions.IncorrectTransferIdException;
 import com.techelevator.tenmo.models.Transfer;
 
 import java.util.List;
@@ -10,6 +10,7 @@ public class ViewTransferDetailsPage extends BasePage {
     public void displayTransferDetails(List<Transfer> transfers, int transferId) {
         Transfer transfer = null;
 
+        // check to see if
         try {
             for (Transfer t : transfers) {
                 if (t.getTransferId() == transferId) {

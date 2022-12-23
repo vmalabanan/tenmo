@@ -5,6 +5,7 @@ import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.*;
+import com.techelevator.tenmo.views.avatars.Cow;
 
 import java.util.List;
 
@@ -150,6 +151,8 @@ public class TenmoApp
         mainMenu();
     }
 
+    // View the details of an individual transfer.
+    // Method takes in a list of all transfers and the transferId passed in by the user
     private void viewTransferDetails(List<Transfer> transfers, int transferId) {
         var page = new ViewTransferDetailsPage();
         page.displayTransferDetails(transfers, transferId);
