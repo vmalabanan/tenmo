@@ -10,10 +10,10 @@ public class ViewTransfersPage extends BasePage {
     public int displayAllTransfers(List<Transfer> transfers, int id) {
         // print headers
         printHeader("Transfers");
-        printHeader("ID\tFrom/to\tAmount");
         // iterate through transfers list and print each on a line
         for (Transfer transfer : transfers) {
             printLine(getTransferAsString(transfer, id));
+//            printTransferAsGrid(transfer, id);
         }
 
         return getIntValue("Please enter transfer ID to view details (0 to cancel): ");
@@ -25,7 +25,7 @@ public class ViewTransfersPage extends BasePage {
     // is to/from the current user
     private String getTransferAsString(Transfer transfer, int id) {
         // format transferId to have a width of 10, justified left
-        String str = String.format("%-10s", transfer.getTransferId());
+        String str = String.format("%-10d", transfer.getTransferId());
 
         // to format amount as money
         NumberFormat n = NumberFormat.getCurrencyInstance();

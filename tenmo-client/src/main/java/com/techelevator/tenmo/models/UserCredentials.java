@@ -2,7 +2,6 @@ package com.techelevator.tenmo.models;
 
 public class UserCredentials
 {
-
     private String username;
     private String password;
 

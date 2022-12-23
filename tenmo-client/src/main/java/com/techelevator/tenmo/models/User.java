@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class User
 {
-
     private int id;
     private String username;
+    private Avatar avatar;
 
     public int getId()
     {
@@ -26,6 +26,14 @@ public class User
     public void setUsername(String username)
     {
         this.username = username;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 
     @Override

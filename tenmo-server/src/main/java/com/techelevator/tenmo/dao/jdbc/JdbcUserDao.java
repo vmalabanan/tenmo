@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao.jdbc;
 
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.Avatar;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -67,12 +68,24 @@ public class JdbcUserDao implements UserDao
     public List<User> findAll()
     {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT user_id, username, password_hash FROM tenmo_user";
+        String sql = "SELECT tu.user_id " +
+                ", tu.username " +
+                ", tu.password_hash " +
+                ", a.avatar_id " +
+                ", a.avatar_desc " +
+                ", a.avatar_line_1 " +
+                ", a.avatar_line_2 " +
+                ", a.avatar_line_3 " +
+                ", a.avatar_line_4 " +
+                ", a.avatar_line_5 " +
+                "FROM tenmo_user as tu " +
+                "JOIN avatar as a " +
+                "ON tu.avatar_id = a.avatar_id;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next())
         {
-            User user = mapRowToUser(results);
+            User user = mapRowToUserAndAvatar(results);
             users.add(user);
         }
 
@@ -110,12 +123,12 @@ public class JdbcUserDao implements UserDao
     @Override
     public boolean create(String username, String password)
     {
-
         // create user
-        String sql = "INSERT INTO tenmo_user (username, password_hash) VALUES (?, ?) RETURNING user_id";
+        String sql = "INSERT INTO tenmo_user (username, password_hash, avatar_id) VALUES (?, ?, ?) RETURNING user_id";
         String password_hash = new BCryptPasswordEncoder().encode(password);
+        int avatarId = getAvatarId(username);
         Integer newUserId;
-        newUserId = jdbcTemplate.queryForObject(sql, Integer.class, username, password_hash);
+        newUserId = jdbcTemplate.queryForObject(sql, Integer.class, username, password_hash, avatarId);
 
         if (newUserId == null)
         {
@@ -136,14 +149,102 @@ public class JdbcUserDao implements UserDao
         return true;
     }
 
+
     private User mapRowToUser(SqlRowSet rs)
     {
         User user = new User();
+
         user.setId(rs.getInt("user_id"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password_hash"));
         user.setActivated(true);
         user.setAuthorities("USER");
+
         return user;
+    }
+
+    // helper function to map each row returned from the sql query to a user object
+    private User mapRowToUserAndAvatar(SqlRowSet rs)
+    {
+        User user = mapRowToUser(rs);
+        Avatar avatar = new Avatar();
+
+        avatar.setAvatarId(rs.getInt("avatar_id"));
+        avatar.setAvatarDesc(rs.getString("avatar_desc"));
+        avatar.setAvatarLine1(rs.getString("avatar_line_1"));
+        avatar.setAvatarLine2(rs.getString("avatar_line_2"));
+        avatar.setAvatarLine3(rs.getString("avatar_line_3"));
+        avatar.setAvatarLine4(rs.getString("avatar_line_4"));
+        avatar.setAvatarLine5(rs.getString("avatar_line_5"));
+
+        user.setAvatar(avatar);
+
+        return user;
+    }
+
+    // helper function to determine the default avatarId to be linked to the user's acount when they register
+    // By default, the avatar will be the first character of username if it starts w/ a-z; otherwise, a robot
+    // Avatars can be changed on client side; this just sets the default when an account is first registered
+    private int getAvatarId(String username) {
+        char c = username.charAt(0);
+        // using placeholder IDs for now, 1-6
+        // TODO: Update the returns once I add all the avatars to the avatar table
+        switch(c) {
+            case 'a':
+                return 1;
+            case 'b':
+                return 2;
+            case 'c':
+                return 3;
+            case 'd':
+                return 4;
+            case 'e':
+                return 5;
+            case 'f':
+                return 6;
+            case 'g':
+                return 1;
+            case 'h':
+                return 2;
+            case 'i':
+                return 3;
+            case 'j':
+                return 4;
+            case 'k':
+                return 5;
+            case 'l':
+                return 6;
+            case 'm':
+                return 1;
+            case 'n':
+                return 2;
+            case 'o':
+                return 3;
+            case 'p':
+                return 4;
+            case 'q':
+                return 5;
+            case 'r':
+                return 6;
+            case 's':
+                return 1;
+            case 't':
+                return 2;
+            case 'u':
+                return 3;
+            case 'v':
+                return 4;
+            case 'w':
+                return 5;
+            case 'x':
+                return 6;
+            case 'y':
+                return 4;
+            case 'z':
+                return 5;
+            default:
+                return 6;
+        }
+
     }
 }

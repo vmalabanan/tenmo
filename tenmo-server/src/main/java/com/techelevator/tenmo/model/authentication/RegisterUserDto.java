@@ -35,4 +35,5 @@ public class RegisterUserDto
     {
         this.password = password;
     }
+
 }

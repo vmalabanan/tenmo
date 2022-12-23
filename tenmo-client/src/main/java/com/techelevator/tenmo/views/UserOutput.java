@@ -28,6 +28,7 @@ public class UserOutput
 
     public void printGreeting()
     {
+        TenmoLogo.printTenmoLogo();
         System.out.println("*********************");
         System.out.println("* Welcome to TEnmo! *");
         System.out.println("*********************");
