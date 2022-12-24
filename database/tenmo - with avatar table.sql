@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
-DROP TABLE IF EXISTS transfer, account, tenmo_user, transfer_type, transfer_status, avatar;
+DROP TABLE IF EXISTS transfer, account, tenmo_user, transfer_type, transfer_status, avatar, avatar_color;
 DROP SEQUENCE IF EXISTS seq_user_id, seq_account_id, seq_transfer_id;
 
 
@@ -28,6 +28,13 @@ CREATE TABLE avatar (
 	CONSTRAINT UQ_avatar_desc UNIQUE (avatar_desc)
 );
 
+CREATE TABLE avatar_color (
+	avatar_color_id serial NOT NULL,
+	avatar_color_desc varchar(10) UNIQUE NOT NULL,
+	CONSTRAINT PK_avatar_color PRIMARY KEY (avatar_color_id),
+	CONSTRAINT UQ_avatar_color_desc UNIQUE (avatar_color_desc)
+);
+
 CREATE SEQUENCE seq_user_id
   INCREMENT BY 1
   START WITH 1001
@@ -39,9 +46,12 @@ CREATE TABLE tenmo_user (
 	password_hash varchar(200) NOT NULL,
 	role varchar(20),
 	avatar_id int NOT NULL,
+	avatar_color_id int NOT NULL,
 	CONSTRAINT PK_tenmo_user PRIMARY KEY (user_id),
 	CONSTRAINT UQ_username UNIQUE (username),
-	CONSTRAINT FK_tenmo_user_avatar FOREIGN KEY (avatar_id) REFERENCES avatar (avatar_id)
+	CONSTRAINT FK_tenmo_user_avatar FOREIGN KEY (avatar_id) REFERENCES avatar (avatar_id),
+	CONSTRAINT FK_tenmo_user_avatar_color FOREIGN KEY (avatar_color_id) REFERENCES avatar_color (avatar_color_id)
+
 );
 
 CREATE SEQUENCE seq_account_id
@@ -93,5 +103,41 @@ INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, av
 INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Bear', ':::::::::::', ':  n---n  :', ': ( `o" ) :', ':  (u u)p :', ':::::::::::');
 INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Cow', ':::::::::::', ':  .---.  :', ': (|. .|) :', ':  (u u)  :', ':::::::::::');
 INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Robot', ':::::::::::', ':  [@_@]  :', ': /|___|\ :', ':  d   b  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('A', ':::::::::::', ':   //\   :', ':  //__\  :', ': //    \ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('B', ':::::::::::', ':  ||_    :', ':  || \\  :', ':  ||_//  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('C', ':::::::::::', ':  //```\ :', ': ||      :', ':  \\___/ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('D', ':::::::::::', ': ||```\  :', ': ||    | :', ': ||___/  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('E', ':::::::::::', ': ||````` :', ': ||====  :', ': ||_____ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('F', ':::::::::::', ': ||````` :', ': ||====  :', ': ||      :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('G', ':::::::::::', ':  //```  :', ': ||  ==\ :', ':  \\___/ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('H', ':::::::::::', ': ||   || :', ': ||===|| :', ': ||   || :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('I', ':::::::::::', ':   |`|   :', ':   | |   :', ':   |_|   :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('J', ':::::::::::', ':    |`|  :', ':  ,_| |  :', ': \\___/  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('K', ':::::::::::', ': ||  ,/  :', ': ||='',   :', ': ||   \  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('L', ':::::::::::', ':  |`|    :', ':  | |__, :', ':  |____| :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('M', ':::::::::::', ': ||\\/|| :', ': || '' || :', ': ||   || :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('N', ':::::::::::', ': ||\\ || :', ': || \\|| :', ': ||  \\| :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('O', ':::::::::::', ':  //```\ :', ': ||     |:', ':  \\___/ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('P', ':::::::::::', ': ||```\\ :', ': ||___// :', ': ||````  :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Q', ':::::::::::', ': //````\ :', ':||  \   |:', ': \\__\_/ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('R', ':::::::::::', ': ||```\\ :', ': ||___// :', ': ||  `\\ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('S', ':::::::::::', ': //```\\ :', ': \\===,. :', ': \\___// :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('T', ':::::::::::', ': |_```_| :', ':   | |   :', ':   |_|   :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('U', ':::::::::::', ': ||   || :', ': ||   || :', ': \\___// :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('V', ':::::::::::', ': \\   // :', ':  \\ //  :', ':   \V/   :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('W', ':::::::::::', ': ||     |:', ': || /\  |:', ':  \\/ \/ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('X', ':::::::::::', ': \\   // :', ':   >v<   :', ': //   \\ :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Y', ':::::::::::', ': \\   // :', ':  \\v//  :', ':   |_|   :', ':::::::::::');
+INSERT INTO avatar (avatar_desc, avatar_line_1, avatar_line_2, avatar_line_3, avatar_line_4, avatar_line_5) VALUES('Z', ':::::::::::', ':  ```//  :', ':   ,//   :', ':  //___  :', ':::::::::::');
+
+
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Red');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Green');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Yellow');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Blue');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Purple');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('Cyan');
+INSERT INTO avatar_color (avatar_color_desc) VALUES('White');
+
 
 COMMIT;

@@ -1,7 +1,7 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.techelevator.tenmo.model.authentication.Authority;
+import com.techelevator.tenmo.models.authentication.Authority;
 
 import java.util.HashSet;
 import java.util.Objects;

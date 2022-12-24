@@ -72,6 +72,9 @@ public class TransferGrid {
         // If transfer is TO current user, we want to display userFrom
         User userToDisplay = getUser(transfer, id);
 
+        String color = mapColorDescriptionToColorCode(transfer, id);
+        String colorReset = ColorCodes.RESET;
+
         // to format amount as money
         NumberFormat n = NumberFormat.getCurrencyInstance();
 
@@ -79,10 +82,11 @@ public class TransferGrid {
 
         switch (row) {
             case 2:
-                line += userToDisplay.getAvatar().getAvatarLine1() + strSpacingAfterAvatar;
+                line += color + userToDisplay.getAvatar().getAvatarLine1() + strSpacingAfterAvatar + colorReset;
                 break;
             case 3:
-                line += userToDisplay.getAvatar().getAvatarLine2() + strSpacingAfterAvatarBeforeUsername;
+
+                line += color + userToDisplay.getAvatar().getAvatarLine2() + strSpacingAfterAvatarBeforeUsername + colorReset;
 
                 // format username to have a width = longestUsernameLength, justified left
                 line += String.format("%-"+ lengthLongestUsername +"s", userToDisplay.getUsername());
@@ -104,7 +108,7 @@ public class TransferGrid {
                 line = ""; // line 4 is a special case; reset line's value
                 // format transfer id to have a width = numSpacesToLeftOfCell, justified left
                 line += String.format("%-"+ numSpacesLeftOfCell +"d", transfer.getTransferId());
-                line += CHAR_LEFT_RIGHT_BORDER + strSpacingBeforeAvatar + userToDisplay.getAvatar().getAvatarLine3() + strSpacingAfterAvatarBeforeUsername;
+                line += CHAR_LEFT_RIGHT_BORDER + strSpacingBeforeAvatar + color + userToDisplay.getAvatar().getAvatarLine3() + strSpacingAfterAvatarBeforeUsername + colorReset;
                 // format date to have a width = longest username, justified left
                 line += String.format("%-"+ lengthLongestUsername +"s", getFormattedDate(transfer));
                 String status = transfer.getTransferStatusDesc();
@@ -117,10 +121,10 @@ public class TransferGrid {
                 line += String.format("%"+ (NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT) +"s", status) + strSpacingAfterAmount + ColorCodes.RESET;
                 break;
             case 5:
-                line += userToDisplay.getAvatar().getAvatarLine4() + strSpacingAfterAvatar;
+                line += color + userToDisplay.getAvatar().getAvatarLine4() + strSpacingAfterAvatar + colorReset;
                 break;
             case 6:
-                line += userToDisplay.getAvatar().getAvatarLine5() + strSpacingAfterAvatar;
+                line += color + userToDisplay.getAvatar().getAvatarLine5() + strSpacingAfterAvatar + colorReset;
                 break;
         }
 
@@ -230,6 +234,36 @@ public class TransferGrid {
         int day = dateTime.getDayOfMonth();
 
         return months[monthInt - 1] + " " + day; // - 1 is because months starts at index 0
+    }
+
+    public static String mapColorDescriptionToColorCode(Transfer transfer, int id) {
+        String color;
+
+        if (isTransferFromCurrentUser(transfer, id)) {
+            color = transfer.getUserFrom().getAvatar().getColor().getColorDesc().toLowerCase();
+        }
+        else {
+            color = transfer.getUserTo().getAvatar().getColor().getColorDesc().toLowerCase();
+        }
+
+        switch (color) {
+            case "red":
+                return ColorCodes.RED;
+            case "green":
+                return ColorCodes.GREEN;
+            case "yellow":
+                return ColorCodes.YELLOW;
+            case "blue":
+                return ColorCodes.BLUE;
+            case "purple":
+                return ColorCodes.PURPLE;
+            case "cyan":
+                return ColorCodes.CYAN;
+            case "white":
+                return ColorCodes.WHITE;
+
+        }
+        return "";
     }
 
 

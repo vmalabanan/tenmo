@@ -19,6 +19,7 @@ public class ViewTransfersPage extends BasePage {
     }
 
     private void printTransferAsGrid(List<Transfer> transfers, int id) {
+
         TransferGrid.printTransferGrid(transfers, id);
     }
 }

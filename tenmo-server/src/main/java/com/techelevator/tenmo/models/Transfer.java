@@ -1,9 +1,8 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Transfer {
     private int transferId;

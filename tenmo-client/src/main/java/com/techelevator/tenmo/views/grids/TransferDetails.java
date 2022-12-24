@@ -81,6 +81,8 @@ public class TransferDetails {
         // to format amount as money
         NumberFormat n = NumberFormat.getCurrencyInstance();
 
+        String status = transfer.getTransferStatusDesc();
+
         String line = strLeftSpacing + CHAR_LEFT_RIGHT_BORDER + strSpacingPaddingLeftRight;
 
         switch (row) {
@@ -125,7 +127,12 @@ public class TransferDetails {
                 line += strSpacingAfterAmount;
                 break;
             case 11:
-                line += "Status: " + transfer.getTransferStatusDesc() + strSpacingAfterStatus;
+                line += "Status: ";
+                // transfer status should be color coded according to rejected, approved, pending
+                if (status.equalsIgnoreCase("Approved")) {line += ColorCodes.BLUE;}
+                else if (status.equalsIgnoreCase("Pending")) {line += ColorCodes.YELLOW;}
+                else {line += ColorCodes.PURPLE;}
+                line += transfer.getTransferStatusDesc() + strSpacingAfterStatus + ColorCodes.RESET;
                 break;
             case 12:
                 line += "Type: " + transfer.getTransferTypeDesc() + strSpacingAfterType;

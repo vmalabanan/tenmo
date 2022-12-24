@@ -2,9 +2,10 @@ package com.techelevator.tenmo.dao.jdbc;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
-import com.techelevator.tenmo.model.Avatar;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.models.Avatar;
+import com.techelevator.tenmo.models.Color;
+import com.techelevator.tenmo.models.Transfer;
+import com.techelevator.tenmo.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -58,8 +59,8 @@ public class JdbcTransferDao implements TransferDao
         List<Transfer> transfers = new ArrayList<>();
 
         // Note: this SQL query joins all the tables in our tenmo database:
-        // transfer_type, transfer_status, transfer, account, tenmo_user, avatar, and avatar_color (to be added).
-        // There are *two* each of the tenmo_user, account, avatar, and avatar_color (to be added) tables, each set representing a transfer account_from and account_to
+        // transfer_type, transfer_status, transfer, account, tenmo_user, avatar, and avatar_color.
+        // There are *two* each of the tenmo_user, account, avatar, and avatar_color tables, each set representing a transfer account_from and account_to
         String sql = "SELECT t.transfer_id " +
                 ", tu.username AS username_from " +
                 ", tu.user_id AS user_id_from " +
@@ -88,6 +89,10 @@ public class JdbcTransferDao implements TransferDao
                 ", av2.avatar_line_3 AS avatar_line_3_to " +
                 ", av2.avatar_line_4 AS avatar_line_4_to " +
                 ", av2.avatar_line_5 AS avatar_line_5_to " +
+                ", ac.avatar_color_id AS avatar_color_id_from " +
+                ", ac.avatar_color_desc AS avatar_color_desc_from " +
+                ", ac2.avatar_color_id AS avatar_color_id_to " +
+                ", ac2.avatar_color_desc AS avatar_color_desc_to " +
                 "FROM transfer AS t " +
                 "JOIN account AS a " +
                 "ON t.account_from = a.account_id " +
@@ -105,6 +110,10 @@ public class JdbcTransferDao implements TransferDao
                 "ON tu.avatar_id = av.avatar_id " +
                 "JOIN avatar as av2 " +
                 "ON tu2.avatar_id = av2.avatar_id " +
+                "JOIN avatar_color as ac " +
+                "ON tu.avatar_color_id = ac.avatar_color_id " +
+                "JOIN avatar_color as ac2 " +
+                "ON tu2.avatar_color_id = ac2.avatar_color_id " +
                 "WHERE a.user_id = ? OR a2.user_id = ?;"; // gets all transactions in which the logged-in user was either the Sender or Receiver of the $$
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
         while (results.next()) {
@@ -208,6 +217,8 @@ public class JdbcTransferDao implements TransferDao
         User userTo = new User();
         Avatar avatarUserFrom = new Avatar();
         Avatar avatarUserTo = new Avatar();
+        Color colorUserFrom = new Color();
+        Color colorUserTo = new Color();
 
         // set general transfer details
         transfer.setTransferId(results.getInt("transfer_id"));
@@ -221,7 +232,7 @@ public class JdbcTransferDao implements TransferDao
         transfer.setTransferMessage(results.getString("message"));
         transfer.setTransferDateTime(String.valueOf(results.getTimestamp("date_time").toLocalDateTime()));
 
-        // set userFrom details, including avatar
+        // set userFrom details, including avatar and avatar color
         userFrom.setId(results.getInt("user_id_from"));
         userFrom.setUsername(results.getString("username_from"));
 
@@ -233,9 +244,13 @@ public class JdbcTransferDao implements TransferDao
         avatarUserFrom.setAvatarLine4(results.getString("avatar_line_4_from"));
         avatarUserFrom.setAvatarLine5(results.getString("avatar_line_5_from"));
 
+        colorUserFrom.setColorId(results.getInt("avatar_color_id_from"));
+        colorUserFrom.setColorDesc(results.getString("avatar_color_desc_from"));
+
+        avatarUserFrom.setColor(colorUserFrom);
         userFrom.setAvatar(avatarUserFrom);
 
-        // set userTo details, including avatar
+        // set userTo details, including avatar and avatar color
         userTo.setId(results.getInt("user_id_to"));
         userTo.setUsername(results.getString("username_to"));
 
@@ -247,6 +262,10 @@ public class JdbcTransferDao implements TransferDao
         avatarUserTo.setAvatarLine4(results.getString("avatar_line_4_to"));
         avatarUserTo.setAvatarLine5(results.getString("avatar_line_5_to"));
 
+        colorUserTo.setColorId(results.getInt("avatar_color_id_to"));
+        colorUserTo.setColorDesc(results.getString("avatar_color_desc_to"));
+
+        avatarUserTo.setColor(colorUserTo);
         userTo.setAvatar(avatarUserTo);
 
         // set UserFrom and userTo in the transfer object

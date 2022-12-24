@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
 public class Avatar {
     private int avatarId;
@@ -8,18 +8,9 @@ public class Avatar {
     private String avatarLine3;
     private String avatarLine4;
     private String avatarLine5;
+    private Color color;
 
     public Avatar() {
-    }
-
-    public Avatar(int avatarId, String avatarDesc, String avatarLine1, String avatarLine2, String avatarLine3, String avatarLine4, String avatarLine5) {
-        this.avatarId = avatarId;
-        this.avatarDesc = avatarDesc;
-        this.avatarLine1 = avatarLine1;
-        this.avatarLine2 = avatarLine2;
-        this.avatarLine3 = avatarLine3;
-        this.avatarLine4 = avatarLine4;
-        this.avatarLine5 = avatarLine5;
     }
 
     public int getAvatarId() {
@@ -76,5 +67,13 @@ public class Avatar {
 
     public void setAvatarLine5(String avatarLine5) {
         this.avatarLine5 = avatarLine5;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
