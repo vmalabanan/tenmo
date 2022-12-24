@@ -25,8 +25,8 @@ public class ViewTransferDetailsPage extends BasePage {
 
             printHeader("Transfer Details");
             printLine("ID: " + transfer.getTransferId());
-            printLine("From: " + transfer.getUsernameFrom());
-            printLine("To: " + transfer.getUsernameTo());
+            printLine("From: " + transfer.getUserFrom().getUsername());
+            printLine("To: " + transfer.getUserTo().getUsername());
             printLine("Type: " + transfer.getTransferTypeDesc());
             printLine("Status: " + transfer.getTransferStatusDesc());
             printLine("Amount: $" + transfer.getAmount());

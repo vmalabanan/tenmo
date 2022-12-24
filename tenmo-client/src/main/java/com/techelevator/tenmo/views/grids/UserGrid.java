@@ -81,7 +81,6 @@ public class UserGrid {
             case 4:
                 line = ""; // line 4 is a special case; reset line's value
                 // format id to have a width = numOfSpacesToLeftOfCell, justified left
-//                line += String.format("%-"+ numOfSpacesToLeftOfCell +"s", user.getId());
                 line += String.format("%-"+ numOfSpacesToLeftOfCell +"d", user.getId());
                 line += CHAR_LEFT_RIGHT_BORDER + spacingBeforeAvatar + user.getAvatar().getAvatarLine3() + spacingAfterAvatarBeforeUsername;
                 // format usernameTo to have a width = longestUsernameLength + spacing, justified left

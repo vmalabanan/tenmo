@@ -5,7 +5,6 @@ import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.*;
-import com.techelevator.tenmo.views.avatars.Cow;
 
 import java.util.List;
 

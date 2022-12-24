@@ -7,17 +7,15 @@ import java.math.BigDecimal;
 public class Transfer {
     private int transferId;
     private int transferTypeId;
-    private int transferStatusId;
-    private int accountFrom;
-    @JsonIgnore // Client should not know accountTo
-    private int accountTo;
-    private int userIdFrom;
-    private int userIdTo;
-    private BigDecimal amount;
     private String transferTypeDesc;
+    private int transferStatusId;
     private String transferStatusDesc;
-    private String usernameFrom;
-    private String usernameTo;
+    private BigDecimal amount;
+    private int accountFrom; // should this be an Account object instead?
+    @JsonIgnore // Client should not know accountTo
+    private int accountTo; // should this be an Account object instead?
+    private User userFrom;
+    private User userTo;
 
     public int getTransferId() {
         return transferId;
@@ -35,12 +33,36 @@ public class Transfer {
         this.transferTypeId = transferTypeId;
     }
 
+    public String getTransferTypeDesc() {
+        return transferTypeDesc;
+    }
+
+    public void setTransferTypeDesc(String transferTypeDesc) {
+        this.transferTypeDesc = transferTypeDesc;
+    }
+
     public int getTransferStatusId() {
         return transferStatusId;
     }
 
     public void setTransferStatusId(int transferStatusId) {
         this.transferStatusId = transferStatusId;
+    }
+
+    public String getTransferStatusDesc() {
+        return transferStatusDesc;
+    }
+
+    public void setTransferStatusDesc(String transferStatusDesc) {
+        this.transferStatusDesc = transferStatusDesc;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public int getAccountFrom() {
@@ -59,59 +81,19 @@ public class Transfer {
         this.accountTo = accountTo;
     }
 
-    public int getUserIdFrom() {
-        return userIdFrom;
+    public User getUserFrom() {
+        return userFrom;
     }
 
-    public void setUserIdFrom(int userIdFrom) {
-        this.userIdFrom = userIdFrom;
+    public void setUserFrom(User userFrom) {
+        this.userFrom = userFrom;
     }
 
-    public int getUserIdTo() {
-        return userIdTo;
+    public User getUserTo() {
+        return userTo;
     }
 
-    public void setUserIdTo(int userIdTo) {
-        this.userIdTo = userIdTo;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getTransferTypeDesc() {
-        return transferTypeDesc;
-    }
-
-    public void setTransferTypeDesc(String transferTypeDesc) {
-        this.transferTypeDesc = transferTypeDesc;
-    }
-
-    public String getTransferStatusDesc() {
-        return transferStatusDesc;
-    }
-
-    public void setTransferStatusDesc(String transferStatusDesc) {
-        this.transferStatusDesc = transferStatusDesc;
-    }
-
-    public String getUsernameFrom() {
-        return usernameFrom;
-    }
-
-    public void setUsernameFrom(String usernameFrom) {
-        this.usernameFrom = usernameFrom;
-    }
-
-    public String getUsernameTo() {
-        return usernameTo;
-    }
-
-    public void setUsernameTo(String usernameTo) {
-        this.usernameTo = usernameTo;
+    public void setUserTo(User userTo) {
+        this.userTo = userTo;
     }
 }

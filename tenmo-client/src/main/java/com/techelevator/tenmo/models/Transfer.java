@@ -5,14 +5,12 @@ import java.math.BigDecimal;
 public class Transfer {
     private int transferId;
     private int transferTypeId;
-    private int transferStatusId;
-    private int userIdFrom;
-    private int userIdTo;
-    private BigDecimal amount;
     private String transferTypeDesc;
+    private int transferStatusId;
     private String transferStatusDesc;
-    private String usernameFrom;
-    private String usernameTo;
+    private BigDecimal amount;
+    private User userFrom;
+    private User userTo;
 
     // Since client should not know the account number of the user they're sending money to
     // and server will determine the client's account number,
@@ -39,44 +37,20 @@ public class Transfer {
         this.transferTypeId = transferTypeId;
     }
 
-    public int getTransferStatusId() {
-        return transferStatusId;
-    }
-
-    public void setTransferStatusId(int transferStatusId) {
-        this.transferStatusId = transferStatusId;
-    }
-
-    public int getUserIdFrom() {
-        return userIdFrom;
-    }
-
-    public void setUserIdFrom(int userIdFrom) {
-        this.userIdFrom = userIdFrom;
-    }
-
-    public int getUserIdTo() {
-        return userIdTo;
-    }
-
-    public void setUserIdTo(int userIdTo) {
-        this.userIdTo = userIdTo;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public String getTransferTypeDesc() {
         return transferTypeDesc;
     }
 
     public void setTransferTypeDesc(String transferTypeDesc) {
         this.transferTypeDesc = transferTypeDesc;
+    }
+
+    public int getTransferStatusId() {
+        return transferStatusId;
+    }
+
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
     public String getTransferStatusDesc() {
@@ -87,20 +61,27 @@ public class Transfer {
         this.transferStatusDesc = transferStatusDesc;
     }
 
-    public String getUsernameFrom() {
-        return usernameFrom;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setUsernameFrom(String usernameFrom) {
-        this.usernameFrom = usernameFrom;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
-    public String getUsernameTo() {
-        return usernameTo;
+    public User getUserFrom() {
+        return userFrom;
     }
 
-    public void setUsernameTo(String usernameTo) {
-        this.usernameTo = usernameTo;
+    public void setUserFrom(User userFrom) {
+        this.userFrom = userFrom;
     }
 
+    public User getUserTo() {
+        return userTo;
+    }
+
+    public void setUserTo(User userTo) {
+        this.userTo = userTo;
+    }
 }

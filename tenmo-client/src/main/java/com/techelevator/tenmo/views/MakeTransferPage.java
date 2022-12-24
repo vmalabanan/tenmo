@@ -13,13 +13,31 @@ public class MakeTransferPage extends BasePage {
         printHeader("Users");
         printListOfUsersAsGrid(users);
         Transfer transfer = new Transfer();
+        User user = new User();
 
         int id = getIntValue("Enter ID of user you are sending to (0 to cancel): ");
         BigDecimal amount = BigDecimal.valueOf(getIntValue("Enter amount: "));
 
         transfer.setAmount(amount);
-        transfer.setUserIdTo(id);
         transfer.setTransferTypeId(2); // 2 is sending
+        user.setId(id);
+        transfer.setUserTo(user);
+
+        return transfer;
+    }
+
+    public Transfer getTransferDetailsRequest(List<User> users){
+        printListOfUsersAsGrid(users);
+        Transfer transfer = new Transfer();
+        User user = new User();
+
+        int id = getIntValue("Enter ID of user you are requesting from (0 to cancel): ");
+        BigDecimal amount = BigDecimal.valueOf(getIntValue("Enter amount: "));
+
+        transfer.setAmount(amount);
+        transfer.setTransferTypeId(1); // 1 is requesting
+        user.setId(id);
+        transfer.setUserFrom(user);
 
         return transfer;
     }
@@ -34,20 +52,6 @@ public class MakeTransferPage extends BasePage {
 
     private void printListOfUsersAsGrid(List<User> users){
         UserGrid.printUserGrid(users);
-    }
-
-    public Transfer getTransferDetailsRequest(List<User> users){
-        printListOfUsersAsGrid(users);
-        Transfer transfer = new Transfer();
-
-        int id = getIntValue("Enter ID of user you are requesting from (0 to cancel): ");
-        BigDecimal amount = BigDecimal.valueOf(getIntValue("Enter amount: "));
-
-        transfer.setAmount(amount);
-        transfer.setUserIdFrom(id);
-        transfer.setTransferTypeId(1); // 1 is requesting
-
-        return transfer;
     }
 
 }
