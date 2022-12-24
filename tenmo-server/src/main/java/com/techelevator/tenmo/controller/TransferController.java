@@ -28,7 +28,7 @@ public class TransferController {
         // get id of logged-in user
         int id = userDao.findIdByUsername(principal.getName());
         // make the transfer and return the Transfer object
-        return transferDao.makeTransfer(transfer, id);
+        return transferDao.makeOrRequestTransfer(transfer, id);
     }
 
     @GetMapping

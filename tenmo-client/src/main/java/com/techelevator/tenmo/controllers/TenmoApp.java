@@ -164,12 +164,13 @@ public class TenmoApp
 
     }
 
+    // TODO: Combing sendBucks and requestBucks
     private void sendBucks()
     {
 
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetailsSend(users);
+        Transfer transfer = page.getTransferDetails(users, 2); // 2 is Send
 
         transferService.makeOrRequestTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
@@ -178,7 +179,7 @@ public class TenmoApp
     {
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetailsRequest(users);
+        Transfer transfer = page.getTransferDetails(users, 1); // 1 is Request
 
         transferService.makeOrRequestTransfer(transfer);
     }

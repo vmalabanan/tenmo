@@ -29,7 +29,7 @@ public class JdbcTransferDao implements TransferDao
     }
 
     @Override
-    public Transfer makeTransfer(Transfer transfer, int id)
+    public Transfer makeOrRequestTransfer(Transfer transfer, int id)
     {
         // if transfer is not valid, set transferStatusId = 3 (rejected) and return the transfer.
         // Transaction will not be added to the transfer table
@@ -41,17 +41,8 @@ public class JdbcTransferDao implements TransferDao
         // finish building the transfer object
         buildTransferObject(transfer, id);
 
-        String sql = "BEGIN TRANSACTION; " +
-                "UPDATE account SET balance = balance - ? WHERE account_id = ?; " +
-                "UPDATE account SET balance = balance + ? WHERE account_id = ?; " +
-                "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES (?, ?, ?, ?, ?); " +
-                "COMMIT;";
-
-       jdbcTemplate.update(sql,
-                           transfer.getAmount(), transfer.getAccountFrom(),
-                           transfer.getAmount(), transfer.getAccountTo(),
-                           transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+        // update transfer table in DB
+        runSqlToUpdateTransferTable(transfer);
 
         // TODO: Decide if we should set transferId attribute for the Transfer object once the above SQL query is run.
         //  We'd need to run a separate SQL query for this because we can't do a returning clause from within a transaction.
@@ -61,7 +52,6 @@ public class JdbcTransferDao implements TransferDao
 
         return transfer;
     }
-
 
     @Override
     public List<Transfer> getAllTransfers(int id) {
@@ -82,6 +72,8 @@ public class JdbcTransferDao implements TransferDao
                 ", ts.transfer_status_desc " +
                 ", t.transfer_status_id " +
                 ", t.amount " +
+                ", t.date_time " +
+                ", t.message " +
                 ", av.avatar_id AS avatar_id_from " +
                 ", av.avatar_desc AS avatar_desc_from " +
                 ", av.avatar_line_1 AS avatar_line_1_from " +
@@ -122,30 +114,6 @@ public class JdbcTransferDao implements TransferDao
         return transfers;
     }
 
-    @Override
-    public boolean requestTransfer(Transfer transfer, int id) {
-        // if transfer is not valid, set transferStatusId = 3 (rejected) and return the transfer.
-        // Transaction will not be added to the transfer table
-        if (!isTransferValid(transfer, id)) {
-            transfer.setTransferStatusId(3);
-            return false;
-        }
-
-        // finish building the transfer object
-        buildTransferObject(transfer, id);
-
-        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES (?, ?, ?, ?, ?); ";
-
-        jdbcTemplate.update(sql,
-                transfer.getAmount(), transfer.getAccountFrom(),
-                transfer.getAmount(), transfer.getAccountTo(),
-                transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-
-        return true;
-
-    }
-
     // helper function
     private boolean isTransferValid(Transfer transfer, int id) {
         if (transfer.getTransferTypeId() == 1) { // 1 is for requesting
@@ -176,21 +144,21 @@ public class JdbcTransferDao implements TransferDao
     }
 
     // helper function to finish building the Transfer object, since
-    // Transfer object from the client only contains userIdTo or userIdFrom and amount
+    // Transfer object from the client only contains userTo/userFrom, amount, and transferType
     private void buildTransferObject(Transfer transfer, int id) {
         Integer accountTo;
         Integer accountFrom;
         User user = new User();
         user.setId(id);
 
-        if (transfer.getTransferTypeId() == 1) { // if the transfer is a request
+        if (transfer.getTransferTypeId() == 1) { // if the transfer is a Request
             accountTo = accountDao.getAccountId(id);
             accountFrom = accountDao.getAccountId(transfer.getUserFrom().getId());
             transfer.setTransferStatusId(1); // 1 is for Pending
 
             transfer.setUserTo(user);
 
-        } else {
+        } else { // if the transfer is a Send
             accountFrom = accountDao.getAccountId(id);
             accountTo = accountDao.getAccountId(transfer.getUserTo().getId());
             transfer.setTransferStatusId(2); // 2 is for Approved
@@ -202,6 +170,36 @@ public class JdbcTransferDao implements TransferDao
         transfer.setAccountTo(accountTo);
 
     }
+
+    // helper function to run SQL queries to update Transfer table in DB
+    private void runSqlToUpdateTransferTable(Transfer transfer) {
+        String sql;
+
+        // if transfer is a Request
+        if (transfer.getTransferTypeId() == 1) {
+            sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount, date_time, message) " +
+                    "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP(0), ?);"; // set date_time to current date and time;
+
+            jdbcTemplate.update(sql,
+                    transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferMessage());
+        }
+
+        // otherwise (i.e., if transfer is a Send)
+        else {
+            sql = "BEGIN TRANSACTION; " +
+                    "UPDATE account SET balance = balance - ? WHERE account_id = ?; " +
+                    "UPDATE account SET balance = balance + ? WHERE account_id = ?; " +
+                    "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount, date_time, message) " +
+                    "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP(0), ?);" + // set date_time to current date and time
+                    "COMMIT;";
+
+            jdbcTemplate.update(sql,
+                    transfer.getAmount(), transfer.getAccountFrom(),
+                    transfer.getAmount(), transfer.getAccountTo(),
+                    transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount(), transfer.getTransferMessage());
+        }
+    }
+
 
     // helper function
     private Transfer mapRowToTransfer(SqlRowSet results) {
@@ -220,6 +218,8 @@ public class JdbcTransferDao implements TransferDao
         transfer.setAmount(results.getBigDecimal("amount"));
         transfer.setTransferTypeDesc(results.getString("transfer_type_desc"));
         transfer.setTransferStatusDesc(results.getString("transfer_status_desc"));
+        transfer.setTransferMessage(results.getString("message"));
+        transfer.setTransferDateTime(String.valueOf(results.getTimestamp("date_time").toLocalDateTime()));
 
         // set userFrom details, including avatar
         userFrom.setId(results.getInt("user_id_from"));

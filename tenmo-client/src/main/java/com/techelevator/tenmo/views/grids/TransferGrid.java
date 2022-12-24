@@ -118,7 +118,7 @@ public class TransferGrid {
 
 
                 String status = transfer.getTransferStatusDesc();
-                // transfer status should be red if rejected, green if approved, yellow if pending
+                // transfer status should be color coded according to rejected, approved, pending
                 if (status.equalsIgnoreCase("Approved")) {line += ColorCodes.BLUE;}
                 else if (status.equalsIgnoreCase("Pending")) {line += ColorCodes.YELLOW;}
                 else {line += ColorCodes.PURPLE;}

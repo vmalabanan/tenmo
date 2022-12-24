@@ -3,6 +3,7 @@ package com.techelevator.tenmo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class Transfer {
     private int transferId;
@@ -16,6 +17,12 @@ public class Transfer {
     private int accountTo; // should this be an Account object instead?
     private User userFrom;
     private User userTo;
+    // the date/time of the latest activity on a transaction (e.g., if a transfer was pending and then approved, this will represent the approved date/time)
+    // Note: tried using LocalDateTime instead of String but this resulted in conversion errors
+    private String transferDateTime;
+
+    // String message to accompany the transaction
+    private String transferMessage;
 
     public int getTransferId() {
         return transferId;
@@ -95,5 +102,21 @@ public class Transfer {
 
     public void setUserTo(User userTo) {
         this.userTo = userTo;
+    }
+
+    public String getTransferDateTime() {
+        return transferDateTime;
+    }
+
+    public void setTransferDateTime(String transferDateTime) {
+        this.transferDateTime = transferDateTime;
+    }
+
+    public String getTransferMessage() {
+        return transferMessage;
+    }
+
+    public void setTransferMessage(String transferMessage) {
+        this.transferMessage = transferMessage;
     }
 }

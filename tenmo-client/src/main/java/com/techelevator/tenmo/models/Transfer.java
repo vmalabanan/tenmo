@@ -11,12 +11,16 @@ public class Transfer {
     private BigDecimal amount;
     private User userFrom;
     private User userTo;
+    // the date/time of the latest activity on a transaction (e.g., if a transfer was pending and then approved, this will represent the approved date/time)
+    // this is set on the server side when a transfer is entered into the DB. Note: tried using LocalDateTime instead of String but this resulted in conversion errors
+    private String transferDateTime;
 
-    // Since client should not know the account number of the user they're sending money to
+    // String message to accompany the transaction
+    private String transferMessage;
+
+    // Note: Since client should not know the account number of the user they're sending money to
     // and server will determine the client's account number,
     // Transfer won't keep track of account numbers
-    //    private int accountFrom;
-    //    private int accountTo;
 
     public Transfer() {
     }
@@ -83,5 +87,22 @@ public class Transfer {
 
     public void setUserTo(User userTo) {
         this.userTo = userTo;
+    }
+
+
+    public String getTransferDateTime() {
+        return transferDateTime;
+    }
+
+    public void setTransferDateTime(String transferDateTime) {
+        this.transferDateTime = transferDateTime;
+    }
+
+    public String getTransferMessage() {
+        return transferMessage;
+    }
+
+    public void setTransferMessage(String transferMessage) {
+        this.transferMessage = transferMessage;
     }
 }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface TransferDao
 {
-    Transfer makeTransfer(Transfer transfer, int id);
+    Transfer makeOrRequestTransfer(Transfer transfer, int id);
 
     List<Transfer> getAllTransfers(int id);
 
-    boolean requestTransfer(Transfer transfer, int id);
+
 }
