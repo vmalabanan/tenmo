@@ -1,7 +1,7 @@
 package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.jdbc.JdbcUserDao;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.models.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

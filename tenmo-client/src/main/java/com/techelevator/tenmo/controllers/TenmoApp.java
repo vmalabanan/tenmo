@@ -141,18 +141,21 @@ public class TenmoApp
     {
         var page = new ViewTransfersPage();
         var transfers = transferService.getAllTransfers();
-        int transferId = page.displayAllTransfers(transfers, currentUser.getUser().getId());
+        int id = currentUser.getUser().getId();
+        int transferId = page.displayAllTransfers(transfers, id);
 
         if (transferId != 0) {
-            viewTransferDetails(transfers, transferId);
+            viewTransferDetails(transfers, transferId, id);
         }
 
         mainMenu();
     }
 
-    private void viewTransferDetails(List<Transfer> transfers, int transferId) {
+    // View the details of an individual transfer.
+    // Method takes in a list of all transfers and the transferId passed in by the user
+    private void viewTransferDetails(List<Transfer> transfers, int transferId, int id) {
         var page = new ViewTransferDetailsPage();
-        page.displayTransferDetails(transfers, transferId);
+        page.displayTransferDetails(transfers, transferId, id);
     }
 
 
@@ -162,12 +165,13 @@ public class TenmoApp
 
     }
 
+    // TODO: Combing sendBucks and requestBucks
     private void sendBucks()
     {
 
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetailsSend(users);
+        Transfer transfer = page.getTransferDetails(users, 2); // 2 is Send
 
         transferService.makeOrRequestTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
@@ -176,7 +180,7 @@ public class TenmoApp
     {
         var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetailsRequest(users);
+        Transfer transfer = page.getTransferDetails(users, 1); // 1 is Request
 
         transferService.makeOrRequestTransfer(transfer);
     }

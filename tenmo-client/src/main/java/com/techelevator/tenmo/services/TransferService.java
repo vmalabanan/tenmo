@@ -4,7 +4,7 @@ import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -47,8 +47,9 @@ public class TransferService extends AuthenticatedApiService<Transfer>
         {
             transfers = null;
             BasicLogger.log(ex.getMessage());
-        }
 
+        }
         return transfers;
     }
+
 }

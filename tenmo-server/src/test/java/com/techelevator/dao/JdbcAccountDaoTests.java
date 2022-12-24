@@ -1,8 +1,7 @@
 package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.jdbc.JdbcAccountDao;
-import com.techelevator.tenmo.model.Account;
-import io.jsonwebtoken.lang.Assert;
+import com.techelevator.tenmo.models.Account;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

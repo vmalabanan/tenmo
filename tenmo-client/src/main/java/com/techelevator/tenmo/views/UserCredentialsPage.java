@@ -7,7 +7,7 @@ public class UserCredentialsPage extends BasePage {
     {
         printHeader(pageName);
 
-        var username = getValue("Enter a username: ");
+        var username = getValue("Enter a username: ").toLowerCase(); // usernames are stored as lowercase only
         var password = getValue("Enter a password: ");
 
         // using the constructor parameters

@@ -1,10 +1,10 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.UserDao;
-import com.techelevator.tenmo.model.authentication.LoginDto;
-import com.techelevator.tenmo.model.authentication.LoginResponseDto;
-import com.techelevator.tenmo.model.authentication.RegisterUserDto;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.models.authentication.LoginDto;
+import com.techelevator.tenmo.models.authentication.LoginResponseDto;
+import com.techelevator.tenmo.models.authentication.RegisterUserDto;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
