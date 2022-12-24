@@ -1,10 +1,7 @@
 package com.techelevator.tenmo.views;
 
 import com.techelevator.tenmo.models.Transfer;
-import com.techelevator.tenmo.views.constants.ColorCodes;
 import com.techelevator.tenmo.views.grids.TransferGrid;
-
-import java.text.NumberFormat;
 import java.util.List;
 
 // TODO: break this into two functions. Make this a void function bc transfers could be null
@@ -21,44 +18,6 @@ public class ViewTransfersPage extends BasePage {
 
     }
 
-    // we are using this method instead of overriding toString() in Transfer class
-    // because we need to know who the logged-in user is to determine whether each transaction
-    // is to/from the current user
-    private String getTransferAsString(Transfer transfer, int id) {
-        // format transferId to have a width of 10, justified left
-        String str = String.format("%-10d", transfer.getTransferId());
-
-        // to format amount as money
-        NumberFormat n = NumberFormat.getCurrencyInstance();
-
-        // if transfer is FROM current user,
-        // we want to display usernameTo
-        // and format the amount as a negative
-        if (transfer.getUserFrom().getId() == id) {
-            // format usernameTo to have a width of 15, justified left
-            str += String.format("%-15s", transfer.getUserTo().getUsername());
-            // add red font and a leading - sign for amount
-            // format amount to have a width of 11, justified right
-            str += ColorCodes.RED + String.format("%11s", "-" + n.format(transfer.getAmount())) + ColorCodes.RESET;
-
-        }
-        // otherwise (i.e., if transfer is TO current user),
-        // we want to display usernameFrom
-        else {
-            // format usernameFrom to have a width of 15, justified left
-            str += String.format("%-15s", transfer.getUserFrom().getUsername());
-            // format amount to have a width of 11, justified right
-            str += String.format("%11s", n.format(transfer.getAmount()));
-
-        }
-
-
-        return str;
-    }
-
-    // we are using this method instead of overriding toString() in Transfer class
-    // because we need to know who the logged-in user is to determine whether each transaction
-    // is to/from the current user
     private void printTransferAsGrid(List<Transfer> transfers, int id) {
         TransferGrid.printTransferGrid(transfers, id);
     }

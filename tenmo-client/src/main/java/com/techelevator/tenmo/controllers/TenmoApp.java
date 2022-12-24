@@ -141,10 +141,11 @@ public class TenmoApp
     {
         var page = new ViewTransfersPage();
         var transfers = transferService.getAllTransfers();
-        int transferId = page.displayAllTransfers(transfers, currentUser.getUser().getId());
+        int id = currentUser.getUser().getId();
+        int transferId = page.displayAllTransfers(transfers, id);
 
         if (transferId != 0) {
-            viewTransferDetails(transfers, transferId);
+            viewTransferDetails(transfers, transferId, id);
         }
 
         mainMenu();
@@ -152,9 +153,9 @@ public class TenmoApp
 
     // View the details of an individual transfer.
     // Method takes in a list of all transfers and the transferId passed in by the user
-    private void viewTransferDetails(List<Transfer> transfers, int transferId) {
+    private void viewTransferDetails(List<Transfer> transfers, int transferId, int id) {
         var page = new ViewTransferDetailsPage();
-        page.displayTransferDetails(transfers, transferId);
+        page.displayTransferDetails(transfers, transferId, id);
     }
 
 

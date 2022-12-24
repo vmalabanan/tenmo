@@ -4,7 +4,9 @@ import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.views.constants.ColorCodes;
 
+import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TransferGrid {
@@ -18,7 +20,6 @@ public class TransferGrid {
     private static final int NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME = 3;
     private static final int NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT = 15;
     private static final int NUM_SPACES_AFTER_AMOUNT = 3;
-    private static final int LENGTH_DATE = 6;
 
     private static int numSpacesAfterAvatar;
     private static int numSpacesLeftOfCell;
@@ -44,20 +45,10 @@ public class TransferGrid {
         // line 1
         System.out.println(lineBuilder(CHAR_TOP_BORDER_OUTER));
 
-        // line 2
-        System.out.println(lineBuilder(transfer, id, 2));
-
-        // line 3
-        System.out.println(lineBuilder(transfer, id, 3));
-
-        // line 4
-        System.out.println(lineBuilder(transfer, id, 4));
-
-        // line 5
-        System.out.println(lineBuilder(transfer, id, 5));
-
-        // line 6
-        System.out.println(lineBuilder(transfer, id, 6));
+        // line 2-6
+        for (int i = 2; i <= 6; i++) {
+            System.out.println(lineBuilder(transfer, id, i));
+        }
 
         // line 7
         System.out.println(lineBuilder(CHAR_BOTTOM_BORDER_OUTER));
@@ -111,20 +102,19 @@ public class TransferGrid {
                 break;
             case 4:
                 line = ""; // line 4 is a special case; reset line's value
-                // format id to have a width = numSpacesToLeftOfCell, justified left
-                line += String.format("%-"+ numSpacesLeftOfCell +"d", userToDisplay.getId());
-                line += CHAR_LEFT_RIGHT_BORDER + strSpacingBeforeAvatar + userToDisplay.getAvatar().getAvatarLine3();
-                // TODO: add code for date
-
-
+                // format transfer id to have a width = numSpacesToLeftOfCell, justified left
+                line += String.format("%-"+ numSpacesLeftOfCell +"d", transfer.getTransferId());
+                line += CHAR_LEFT_RIGHT_BORDER + strSpacingBeforeAvatar + userToDisplay.getAvatar().getAvatarLine3() + strSpacingAfterAvatarBeforeUsername;
+                // format date to have a width = longest username, justified left
+                line += String.format("%-"+ lengthLongestUsername +"s", getFormattedDate(transfer));
                 String status = transfer.getTransferStatusDesc();
                 // transfer status should be color coded according to rejected, approved, pending
                 if (status.equalsIgnoreCase("Approved")) {line += ColorCodes.BLUE;}
                 else if (status.equalsIgnoreCase("Pending")) {line += ColorCodes.YELLOW;}
                 else {line += ColorCodes.PURPLE;}
 
-                // transfer status to have a width = number of spaces after avatar to the end of amount, justified right
-                line += String.format("%"+ (NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME + lengthLongestUsername + NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT) +"s", status) + strSpacingAfterAmount + ColorCodes.RESET;
+                // format transfer status to have a width = number of spaces after longest username to the end of amount, justified right
+                line += String.format("%"+ (NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT) +"s", status) + strSpacingAfterAmount + ColorCodes.RESET;
                 break;
             case 5:
                 line += userToDisplay.getAvatar().getAvatarLine4() + strSpacingAfterAvatar;
@@ -137,6 +127,7 @@ public class TransferGrid {
         line += CHAR_LEFT_RIGHT_BORDER;
         return line;
     }
+
 
     private static User getUser(Transfer transfer, int id) {
         // if transfer is FROM current user,
@@ -193,6 +184,8 @@ public class TransferGrid {
         }
     }
 
+
+
     private static void setSpacing() {
         String spacing = "";
         for (int i = 0; i < numSpacesLeftOfCell; i++) {
@@ -227,6 +220,17 @@ public class TransferGrid {
 
     }
 
+
+    private static String getFormattedDate(Transfer transfer) {
+        // An array of short month names (e.g., Jan, Feb, etc).
+        String[] months = new DateFormatSymbols().getShortMonths();
+        // Parse the string dateTime into a LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.parse(transfer.getTransferDateTime());
+        int monthInt = dateTime.getMonthValue();
+        int day = dateTime.getDayOfMonth();
+
+        return months[monthInt - 1] + " " + day; // - 1 is because months starts at index 0
+    }
 
 
 }
