@@ -1,11 +1,7 @@
 package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.jdbc.JdbcAccountDao;
-<<<<<<< HEAD
-import com.techelevator.tenmo.model.Account;
-=======
 import com.techelevator.tenmo.models.Account;
->>>>>>> 4bdc94f9942850a03734fe0c39f01c992874ef36
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
