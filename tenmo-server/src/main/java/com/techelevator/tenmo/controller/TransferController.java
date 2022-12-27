@@ -26,14 +26,14 @@ public class TransferController {
     @PostMapping
     public Transfer makeTransfer(@RequestBody Transfer transfer, Principal principal) {
         // get id of logged-in user
-        int id = userDao.findIdByUsername(principal.getName());
+        int id = userDao.getIdByUsername(principal.getName());
         // make the transfer and return the Transfer object
         return transferDao.makeOrRequestTransfer(transfer, id);
     }
 
     @GetMapping
     public List<Transfer> getAllTransfers(Principal principal) {
-        int id = userDao.findIdByUsername(principal.getName());
+        int id = userDao.getIdByUsername(principal.getName());
 
         return transferDao.getAllTransfers(id);
     }

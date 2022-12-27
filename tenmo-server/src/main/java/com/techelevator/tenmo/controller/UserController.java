@@ -25,9 +25,9 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsersExceptCurrent(Principal principal) {
-        int id = userDao.findIdByUsername(principal.getName());
+        int id = userDao.getIdByUsername(principal.getName());
 
-        return userDao.findAllExceptCurrent(id);
+        return userDao.getAllExceptCurrent(id);
     }
 
 }

@@ -31,7 +31,7 @@ public class JdbcUserDao implements UserDao
     }
 
     @Override
-    public int findIdByUsername(String username)
+    public int getIdByUsername(String username)
     {
         if (username == null)
         {
@@ -54,7 +54,25 @@ public class JdbcUserDao implements UserDao
     @Override
     public User getUserById(int userId)
     {
-        String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE user_id = ?";
+        String sql = "SELECT tu.user_id " +
+                " , tu.username " +
+                " , tu.password_hash " +
+                " , a.avatar_id " +
+                " , a.avatar_desc " +
+                " , a.avatar_line_1 " +
+                " , a.avatar_line_2 " +
+                " , a.avatar_line_3 " +
+                " , a.avatar_line_4 " +
+                " , a.avatar_line_5 " +
+                " , ac.avatar_color_id " +
+                " , ac.avatar_color_desc " +
+                "FROM tenmo_user as tu " +
+                "JOIN avatar as a " +
+                "ON tu.avatar_id = a.avatar_id " +
+                "JOIN avatar_color as ac " +
+                "ON tu.avatar_color_id = ac.avatar_color_id " +
+                "WHERE tu.user_id = ?;";
+
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         if (results.next())
         {
@@ -67,7 +85,7 @@ public class JdbcUserDao implements UserDao
     }
 
     @Override
-    public List<User> findAll()
+    public List<User> getAll()
     {
         List<User> users = new ArrayList<>();
         String sql = "SELECT tu.user_id " +
@@ -91,7 +109,7 @@ public class JdbcUserDao implements UserDao
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next())
         {
-            User user = mapRowToUserAndAvatar(results);
+            User user = mapRowToUser(results);
             users.add(user);
         }
 
@@ -99,8 +117,8 @@ public class JdbcUserDao implements UserDao
     }
 
     @Override
-    public List<User> findAllExceptCurrent(int id) {
-        List<User> users = findAll();
+    public List<User> getAllExceptCurrent(int id) {
+        List<User> users = getAll();
         List<User> usersExceptCurrent = users.stream()
                                              .filter(u -> u.getId() != id)
                                              .collect(Collectors.toList());
@@ -108,16 +126,32 @@ public class JdbcUserDao implements UserDao
         return usersExceptCurrent;
     }
 
-
     @Override
-    public User findByUsername(String username)
+    public User getByUsername(String username)
     {
         if (username == null)
         {
             throw new IllegalArgumentException("Username cannot be null");
         }
 
-        String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE username = ?;";
+        String sql = "SELECT tu.user_id " +
+                " , tu.username " +
+                " , tu.password_hash " +
+                " , a.avatar_id " +
+                " , a.avatar_desc " +
+                " , a.avatar_line_1 " +
+                " , a.avatar_line_2 " +
+                " , a.avatar_line_3 " +
+                " , a.avatar_line_4 " +
+                " , a.avatar_line_5 " +
+                " , ac.avatar_color_id " +
+                " , ac.avatar_color_desc " +
+                "FROM tenmo_user as tu " +
+                "JOIN avatar as a " +
+                "ON tu.avatar_id = a.avatar_id " +
+                "JOIN avatar_color as ac " +
+                "ON tu.avatar_color_id = ac.avatar_color_id " +
+                "WHERE tu.username = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
         if (rowSet.next())
         {
@@ -156,24 +190,18 @@ public class JdbcUserDao implements UserDao
         return true;
     }
 
-
+    // helper function to map each row returned from the sql query to a user object
     private User mapRowToUser(SqlRowSet rs)
     {
         User user = new User();
 
+        // set id, username, password, etc.
         user.setId(rs.getInt("user_id"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password_hash"));
         user.setActivated(true);
         user.setAuthorities("USER");
 
-        return user;
-    }
-
-    // helper function to map each row returned from the sql query to a user object
-    private User mapRowToUserAndAvatar(SqlRowSet rs)
-    {
-        User user = mapRowToUser(rs);
         Avatar avatar = new Avatar();
         Color color = new Color();
 
