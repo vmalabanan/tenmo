@@ -1,7 +1,7 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.techelevator.tenmo.model.authentication.Authority;
+import com.techelevator.tenmo.models.authentication.Authority;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,6 +16,7 @@ public class User
     private String password;
     @JsonIgnore
     private boolean activated;
+    private Avatar avatar;
     private Set<Authority> authorities = new HashSet<>();
 
     public User()
@@ -72,6 +73,14 @@ public class User
     public void setActivated(boolean activated)
     {
         this.activated = activated;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 
     public Set<Authority> getAuthorities()

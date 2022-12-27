@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.views;
 
 import com.techelevator.tenmo.views.constants.ColorCodes;
+import com.techelevator.tenmo.views.constants.Console;
 
 import java.util.Scanner;
 
@@ -29,6 +30,10 @@ public abstract class BasePage
         printLine();
     }
 
+    // clear screen
+    public static void clearScreen() {
+        System.out.println(Console.CLEAR_SCREEN);
+    }
 
     // prints
     public void print(String line)

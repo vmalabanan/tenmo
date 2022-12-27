@@ -28,6 +28,7 @@ public class UserOutput
 
     public void printGreeting()
     {
+        TenmoLogo.printTenmoLogo();
         System.out.println("*********************");
         System.out.println("* Welcome to TEnmo! *");
         System.out.println("*********************");
@@ -56,7 +57,7 @@ public class UserOutput
 
     public UserCredentials promptForCredentials()
     {
-        String username = promptForString("Username: ");
+        String username = promptForString("Username: ").toLowerCase(); // usernames should be stored as lowercase only
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
     }

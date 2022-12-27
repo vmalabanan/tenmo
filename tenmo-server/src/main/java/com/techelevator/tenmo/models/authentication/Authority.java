@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.model.authentication;
+package com.techelevator.tenmo.models.authentication;
 
 import java.util.Objects;
 

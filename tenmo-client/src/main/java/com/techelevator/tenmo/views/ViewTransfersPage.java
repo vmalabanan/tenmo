@@ -1,35 +1,25 @@
 package com.techelevator.tenmo.views;
 
 import com.techelevator.tenmo.models.Transfer;
-
+import com.techelevator.tenmo.views.grids.TransferGrid;
 import java.util.List;
 
+// TODO: break this into two functions. Make this a void function bc transfers could be null
 public class ViewTransfersPage extends BasePage {
     public int displayAllTransfers(List<Transfer> transfers, int id) {
+        // print headers
         printHeader("Transfers");
-        printHeader("ID\tFrom/to\tAmount");
-        for (Transfer transfer : transfers) {
-            printLine(getTransferAsString(transfer, id));
-        }
+
+        // print transfers
+        if (transfers == null) {print("No transfers to display.");}
+        else {printTransferAsGrid(transfers, id);}
 
         return getIntValue("Please enter transfer ID to view details (0 to cancel): ");
 
     }
 
-    private String getTransferAsString(Transfer transfer, int id) {
-        String str = transfer.getTransferId() + "\t";
+    private void printTransferAsGrid(List<Transfer> transfers, int id) {
 
-        // if transfer is from current user to another user
-        if (transfer.getUserIdFrom() == id) {
-            str += "To: " + transfer.getUsernameTo();
-        }
-        // otherwise
-        else {
-            str += "From: " + transfer.getUsernameFrom();
-        }
-
-        str += "\t" + transfer.getAmount(); // need to format this as currency
-
-        return str;
+        TransferGrid.printTransferGrid(transfers, id);
     }
 }

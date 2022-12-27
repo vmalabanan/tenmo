@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigDecimal;
 
 public class Transfer {
@@ -9,21 +11,17 @@ public class Transfer {
     private int transferStatusId;
     private String transferStatusDesc;
     private BigDecimal amount;
+    private int accountFrom; // should this be an Account object instead?
+    @JsonIgnore // Client should not know accountTo
+    private int accountTo; // should this be an Account object instead?
     private User userFrom;
     private User userTo;
     // the date/time of the latest activity on a transaction (e.g., if a transfer was pending and then approved, this will represent the approved date/time)
-    // this is set on the server side when a transfer is entered into the DB. Note: tried using LocalDateTime instead of String but this resulted in conversion errors
+    // Note: tried using LocalDateTime instead of String but this resulted in conversion errors
     private String transferDateTime;
 
     // String message to accompany the transaction
     private String transferMessage;
-
-    // Note: Since client should not know the account number of the user they're sending money to
-    // and server will determine the client's account number,
-    // Transfer won't keep track of account numbers
-
-    public Transfer() {
-    }
 
     public int getTransferId() {
         return transferId;
@@ -73,6 +71,22 @@ public class Transfer {
         this.amount = amount;
     }
 
+    public int getAccountFrom() {
+        return accountFrom;
+    }
+
+    public void setAccountFrom(int accountFrom) {
+        this.accountFrom = accountFrom;
+    }
+
+    public int getAccountTo() {
+        return accountTo;
+    }
+
+    public void setAccountTo(int accountTo) {
+        this.accountTo = accountTo;
+    }
+
     public User getUserFrom() {
         return userFrom;
     }
@@ -88,7 +102,6 @@ public class Transfer {
     public void setUserTo(User userTo) {
         this.userTo = userTo;
     }
-
 
     public String getTransferDateTime() {
         return transferDateTime;
