@@ -26,7 +26,7 @@ public class AccountController {
 
     @GetMapping
     public BigDecimal getBalance(Principal principal) {
-        int id = userDao.findIdByUsername(principal.getName());
+        int id = userDao.getIdByUsername(principal.getName());
 
         return accountDao.getBalance(id);
     }

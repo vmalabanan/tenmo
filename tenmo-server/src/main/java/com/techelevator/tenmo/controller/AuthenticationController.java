@@ -37,7 +37,6 @@ public class AuthenticationController
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public LoginResponseDto login(@Valid @RequestBody LoginDto loginDto)
     {
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
@@ -45,7 +44,7 @@ public class AuthenticationController
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, false);
 
-        User user = userDao.findByUsername(loginDto.getUsername());
+        User user = userDao.getByUsername(loginDto.getUsername());
 
         return new LoginResponseDto(jwt, user);
     }

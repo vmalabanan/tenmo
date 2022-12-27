@@ -6,16 +6,15 @@ import java.util.List;
 
 public interface UserDao
 {
+    List<User> getAll();
 
-    List<User> findAll();
-
-    List<User> findAllExceptCurrent(int id);
+    List<User> getAllExceptCurrent(int id);
 
     User getUserById(int id);
 
-    User findByUsername(String username);
+    User getByUsername(String username);
 
-    int findIdByUsername(String username);
+    int getIdByUsername(String username);
 
     boolean create(String username, String password);
 }

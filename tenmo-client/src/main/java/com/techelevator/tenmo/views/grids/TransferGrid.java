@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.views.grids;
 
+import com.techelevator.tenmo.models.Avatar;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.views.constants.ColorCodes;
@@ -72,7 +73,7 @@ public class TransferGrid {
         // If transfer is TO current user, we want to display userFrom
         User userToDisplay = getUser(transfer, id);
 
-        String color = mapColorDescriptionToColorCode(transfer, id);
+        String color = mapColorDescriptionToColorCode(userToDisplay.getAvatar());
         String colorReset = ColorCodes.RESET;
 
         // to format amount as money
@@ -236,15 +237,8 @@ public class TransferGrid {
         return months[monthInt - 1] + " " + day; // - 1 is because months starts at index 0
     }
 
-    public static String mapColorDescriptionToColorCode(Transfer transfer, int id) {
-        String color;
-
-        if (isTransferFromCurrentUser(transfer, id)) {
-            color = transfer.getUserFrom().getAvatar().getColor().getColorDesc().toLowerCase();
-        }
-        else {
-            color = transfer.getUserTo().getAvatar().getColor().getColorDesc().toLowerCase();
-        }
+    public static String mapColorDescriptionToColorCode(Avatar avatar) {
+        String color = avatar.getColor().getColorDesc().toLowerCase();
 
         switch (color) {
             case "red":

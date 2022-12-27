@@ -1,8 +1,6 @@
 package com.techelevator.tenmo.controllers;
 
-import com.techelevator.tenmo.models.AuthenticatedUser;
-import com.techelevator.tenmo.models.Transfer;
-import com.techelevator.tenmo.models.UserCredentials;
+import com.techelevator.tenmo.models.*;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.*;
 
@@ -20,6 +18,7 @@ public class TenmoApp
     private AuthenticatedUser currentUser;
     private UserService userService = new UserService();
     private TransferService transferService = new TransferService();
+    private AvatarService avatarService = new AvatarService();
 
     public TenmoApp() {
         AuthenticatedApiService.setBaseUrl(API_BASE_URL);
@@ -117,6 +116,10 @@ public class TenmoApp
             {
                 requestBucks();
             }
+            else if (menuSelection == 6)
+            {
+                changeAvatar();
+            }
             else if (menuSelection == 0)
             {
                 continue;
@@ -128,6 +131,7 @@ public class TenmoApp
             userOutput.pause();
         }
     }
+
 
     private void viewCurrentBalance()
     {
@@ -185,5 +189,38 @@ public class TenmoApp
         transferService.makeOrRequestTransfer(transfer);
     }
 
+    private void changeAvatar() {
+        var page = new ChangeAvatarPage(currentUser.getUser().getAvatar());
+        page.displayCurrentAvatar();
+        int choice = page.getChangeAvatarSelection();
+
+        // change avatar
+        if (choice == 1 || choice == 3) {
+            List<Avatar> avatars = avatarService.getAllAvatars();
+            page.displayAvatars(avatars);
+            int selection = page.getSelection(0, avatars.size());
+
+            if (selection != 0) {
+                Avatar avatar = page.makeAvatarSelection(avatars, selection);
+                Avatar newAvatar = avatarService.changeAvatar(avatar);
+                currentUser.getUser().setAvatar(newAvatar);
+
+            }
+        }
+        // change avatar color
+        if (choice == 2 || choice == 3) {
+            changeAvatarColor();
+        }
+        // return to menu
+        mainMenu();
+
+    }
+
+    private void changeAvatarColor() {
+//        List<Color> colors = colorService.getAllColors();
+//        page.displayColors(colors);
+//        int colorId = page.getColorSelection(colors.size);
+//        colorService.changeColor(colorId);
+    }
 
 }
