@@ -1,7 +1,6 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.models.Avatar;
-import com.techelevator.tenmo.models.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,6 @@
 package com.techelevator.tenmo.views;
 
 import com.techelevator.tenmo.models.Avatar;
-import com.techelevator.tenmo.models.Color;
-
 import java.util.List;
 
 public class ChangeAvatarPage extends DisplayAvatar {
@@ -27,29 +25,12 @@ public class ChangeAvatarPage extends DisplayAvatar {
 
     public int getChangeAvatarSelection() {
         changeAvatarOptions();
-        return getSelection(0, 3);
+        return getSelection(3);
     }
 
     public Avatar makeAvatarSelection(List<Avatar> avatars, int choice) {
         return avatars.get(choice - 1);
     }
-
-    public int getColorSelection(int numOfColors) {
-        return getSelection(0, numOfColors);
-    }
-
-    public int getSelection(int minMenuOption, int maxMenuOption) {
-        int id = getIntValue("Please make a selection (0) to cancel: ");
-
-        // if selection isn't valid
-        if (id < minMenuOption || id > maxMenuOption) {
-            print("Invalid selection");
-            return getSelection(minMenuOption, maxMenuOption);
-        }
-
-        return id;
-    }
-
 
     public void displayAvatars(List<Avatar> avatars) {
         printHeader("Avatars");
@@ -97,15 +78,6 @@ public class ChangeAvatarPage extends DisplayAvatar {
         print(line);
     }
 
-    public void displayColors(List<Color> colors) {
-        for (int i = 0; i < colors.size(); i++) {
-            String color = colors.get(i).getColorDesc();
-            String colorCode = mapColorDescriptionToColorCode(color);
-            // number each color starting from 1
-            printLine("(" + (i + 1) + ") " + colorCode + color + getCOLOR_RESET());
-
-        }
-    }
 
     private String formatAvatarName(String name) {
         int avatarWidth = 11;

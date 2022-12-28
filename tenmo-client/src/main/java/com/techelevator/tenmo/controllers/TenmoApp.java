@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TenmoApp
 {
-
     private static final String API_BASE_URL = "http://localhost:8080/";
 
     private final UserOutput userOutput = new UserOutput();
@@ -19,6 +18,7 @@ public class TenmoApp
     private UserService userService = new UserService();
     private TransferService transferService = new TransferService();
     private AvatarService avatarService = new AvatarService();
+    private ColorService colorService = new ColorService();
 
     public TenmoApp() {
         AuthenticatedApiService.setBaseUrl(API_BASE_URL);
@@ -146,7 +146,7 @@ public class TenmoApp
         var page = new ViewTransfersPage();
         var transfers = transferService.getAllTransfers();
         int id = currentUser.getUser().getId();
-        int transferId = page.displayAllTransfers(transfers, id);
+        int transferId = page.displayTransfers(transfers, id, "Please enter transfer ID to view details (0 to cancel): ");
 
         if (transferId != 0) {
             viewTransferDetails(transfers, transferId, id);
@@ -162,14 +162,28 @@ public class TenmoApp
         page.displayTransferDetails(transfers, transferId, id);
     }
 
-
+    // TODO: combine with viewTransferHistory ?
     private void viewPendingRequests()
     {
-        // TODO Auto-generated method stub
+        var page = new ViewTransfersPage();
+        var transfers = transferService.getPendingTransfers();
+        int id = currentUser.getUser().getId();
+        int transferId = page.displayTransfers(transfers, id, "Please enter transfer ID to approve/reject (0 to cancel): ");
+
+        if (transferId != 0) {
+            int option = page.getPendingTransferOption();
+
+            if (option != 0) {
+                Transfer transfer = page.approveOrRejectTransfer(transfers, transferId, option); // should this be in MakeTransferPage instead?
+                transferService.handleTransfer(transfer);
+            }
+        }
+
+        mainMenu();
 
     }
 
-    // TODO: Combing sendBucks and requestBucks
+    // TODO: Combine sendBucks and requestBucks
     private void sendBucks()
     {
 
@@ -177,7 +191,7 @@ public class TenmoApp
         var users = userService.getAllUsers();
         Transfer transfer = page.getTransferDetails(users, 2); // 2 is Send
 
-        transferService.makeOrRequestTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
+        transferService.handleTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
 
     private void requestBucks()
@@ -186,7 +200,7 @@ public class TenmoApp
         var users = userService.getAllUsers();
         Transfer transfer = page.getTransferDetails(users, 1); // 1 is Request
 
-        transferService.makeOrRequestTransfer(transfer);
+        transferService.handleTransfer(transfer);
     }
 
     private void changeAvatar() {
@@ -198,11 +212,14 @@ public class TenmoApp
         if (choice == 1 || choice == 3) {
             List<Avatar> avatars = avatarService.getAllAvatars();
             page.displayAvatars(avatars);
-            int selection = page.getSelection(0, avatars.size());
+            int selection = page.getSelection(avatars.size());
 
             if (selection != 0) {
                 Avatar avatar = page.makeAvatarSelection(avatars, selection);
                 Avatar newAvatar = avatarService.changeAvatar(avatar);
+                // Set the currentUser's avatar
+                // (because the avatar is only pulled from the server once, on login.
+                // So when any changes are made, they have to be set here)
                 currentUser.getUser().setAvatar(newAvatar);
 
             }
@@ -213,14 +230,24 @@ public class TenmoApp
         }
         // return to menu
         mainMenu();
-
     }
 
     private void changeAvatarColor() {
-//        List<Color> colors = colorService.getAllColors();
-//        page.displayColors(colors);
-//        int colorId = page.getColorSelection(colors.size);
-//        colorService.changeColor(colorId);
+        var page = new ChangeAvatarColorPage(currentUser.getUser().getAvatar());
+
+        List<Color> colors = colorService.getAllColors();
+        page.displayColors(colors);
+        int selection = page.getSelection(colors.size());
+
+        if (selection != 0) {
+            Color color = page.makeColorSelection(colors, selection);
+            Color newColor = colorService.changeColor(color);
+            // Set the currentUser's avatar color
+            // (because the avatar, including color, is only pulled from the server once, on login.
+            // So when any changes are made, they have to be set here)
+            currentUser.getUser().getAvatar().setColor(newColor);
+
+        }
     }
 
 }

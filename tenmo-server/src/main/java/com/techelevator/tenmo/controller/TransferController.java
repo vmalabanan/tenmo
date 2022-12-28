@@ -24,11 +24,11 @@ public class TransferController {
     }
 
     @PostMapping
-    public Transfer makeTransfer(@RequestBody Transfer transfer, Principal principal) {
+    public Transfer handleTransfer(@RequestBody Transfer transfer, Principal principal) {
         // get id of logged-in user
         int id = userDao.getIdByUsername(principal.getName());
-        // make the transfer and return the Transfer object
-        return transferDao.makeOrRequestTransfer(transfer, id);
+        // handle the transfer and return the Transfer object
+        return transferDao.handleTransfer(transfer, id);
     }
 
     @GetMapping
@@ -36,5 +36,13 @@ public class TransferController {
         int id = userDao.getIdByUsername(principal.getName());
 
         return transferDao.getAllTransfers(id);
+    }
+
+    @RequestMapping("/pending")
+    @GetMapping
+    public List<Transfer> getPendingTransfers(Principal principal) {
+        int id = userDao.getIdByUsername(principal.getName());
+
+        return transferDao.getPendingTransfers(id);
     }
 }

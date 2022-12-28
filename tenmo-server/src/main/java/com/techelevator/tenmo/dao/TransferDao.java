@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface TransferDao
 {
-    Transfer makeOrRequestTransfer(Transfer transfer, int id);
+    Transfer handleTransfer(Transfer transfer, int id);
 
     List<Transfer> getAllTransfers(int id);
+
+    List<Transfer> getPendingTransfers(int id);
+
+    Transfer getTransferById(int transferId);
 
 
 }

@@ -30,6 +30,18 @@ public abstract class BasePage
         printLine();
     }
 
+    public int getSelection(int maxMenuOption) {
+        int selection = getIntValue("Please make a selection. (0 to cancel): ");
+
+        // if selection isn't valid
+        if (selection < 0 || selection > maxMenuOption) {
+            print("Invalid selection.");
+            return getSelection(maxMenuOption);
+        }
+
+        return selection;
+    }
+
     // clear screen
     public static void clearScreen() {
         System.out.println(Console.CLEAR_SCREEN);

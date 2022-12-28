@@ -107,7 +107,7 @@ public class JdbcAvatarDao implements AvatarDao {
         }
     }
 
-    // helper function to map each row returned from the sql query to a user object
+    // helper function to map each row returned from the sql query to an Avatar object
     private Avatar mapRowToAvatar(SqlRowSet rs, boolean setColor)
     {
         Avatar avatar = new Avatar();

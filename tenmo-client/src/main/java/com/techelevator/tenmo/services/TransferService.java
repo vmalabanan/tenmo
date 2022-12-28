@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class TransferService extends AuthenticatedApiService<Transfer>
 {
-    public Transfer makeOrRequestTransfer(Transfer transfer)
+    public Transfer handleTransfer(Transfer transfer)
     {
         Transfer newTransfer;
 
@@ -38,6 +38,26 @@ public class TransferService extends AuthenticatedApiService<Transfer>
         try
         {
             var url = baseUrl + "transfer";
+            var entity = makeAuthEntity();
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, Transfer[].class);
+            transfers = Arrays.asList(Objects.requireNonNull(response.getBody()));
+        }
+        catch(Exception ex)
+        {
+            transfers = null;
+            BasicLogger.log(ex.getMessage());
+
+        }
+        return transfers;
+    }
+
+    // do we want this as a separate server call, or should we just filter the results from getAllTransfers?
+    public List<Transfer> getPendingTransfers() {
+        List<Transfer> transfers;
+
+        try
+        {
+            var url = baseUrl + "transfer/pending";
             var entity = makeAuthEntity();
             ResponseEntity<Transfer[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, Transfer[].class);
             transfers = Arrays.asList(Objects.requireNonNull(response.getBody()));

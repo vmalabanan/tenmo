@@ -26,7 +26,7 @@ public class MakeTransferPage extends BasePage {
         }
 
         int id = getIntValue(prompt);
-        BigDecimal amount = BigDecimal.valueOf(getIntValue("Enter amount: "));
+        BigDecimal amount = new BigDecimal(getValue("Enter amount: "));
         String message = getValue("What's it for? ");
 
         // set transfer details
