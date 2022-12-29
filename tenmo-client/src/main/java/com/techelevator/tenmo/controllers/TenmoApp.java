@@ -104,10 +104,10 @@ public class TenmoApp
             currentUser = authenticatedUser;
             AuthenticatedApiService.setAuthToken(currentUser.getToken());
         }
+        // if credentials aren't correct, show alert and go back to first menu page
         else
         {
-            UserCredentialsPage.printHeader("Error");
-            UserCredentialsPage.printRedLine("The login credentials were incorrect");
+            UserCredentialsPage.printAlertStyle("Incorrect username or password. Please try again.", true);
         }
     }
 

@@ -42,8 +42,8 @@ public class DisplayAvatar extends BasePage {
 
     }
 
-    public String getAvatarByLine(int line) {
-        String str = "";
+    public String getLine(int line) {
+        String str = colorCode;
 
         switch (line) {
             case 1:
@@ -63,7 +63,7 @@ public class DisplayAvatar extends BasePage {
                 break;
         }
 
-        return str;
+        return str += COLOR_RESET;
     }
 
     public String mapColorDescriptionToColorCode(Avatar avatar) {
