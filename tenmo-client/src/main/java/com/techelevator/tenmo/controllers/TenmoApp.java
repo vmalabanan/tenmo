@@ -2,9 +2,9 @@ package com.techelevator.tenmo.controllers;
 
 import com.techelevator.tenmo.models.*;
 import com.techelevator.tenmo.services.*;
-import com.techelevator.tenmo.views.*;
 import com.techelevator.tenmo.views.pages.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TenmoApp
@@ -119,41 +119,40 @@ public class TenmoApp
         int menuSelection = -1;
         while (menuSelection != 0)
         {
-            MainMenuPage.printMenu();
+            // get current user's balance
+            BigDecimal balance = accountService.getCurrentBalance();
+
+            MainMenuPage.printMenu(currentUser.getUser(), balance);
+
             menuSelection = MainMenuPage.getSelection("Please choose an option: ");
             if (menuSelection == 1)
             {
-                viewCurrentBalance();
+                viewTransferHistory();
             }
             else if (menuSelection == 2)
             {
-                viewTransferHistory();
+                viewPendingRequests();
             }
             else if (menuSelection == 3)
             {
-                viewPendingRequests();
+                sendBucks();
             }
             else if (menuSelection == 4)
             {
-                sendBucks();
-            }
-            else if (menuSelection == 5)
-            {
                 requestBucks();
             }
-            else if (menuSelection == 6)
+            else if (menuSelection == 5)
             {
                 changeAvatar();
             }
             else if (menuSelection == 0)
             {
-                continue;
+                MainMenuPage.goodbye();
             }
             else
             {
-                System.out.println("Invalid Selection");
+                MainMenuPage.invalidSelection();
             }
-            MainMenuPage.pause();
         }
     }
 
