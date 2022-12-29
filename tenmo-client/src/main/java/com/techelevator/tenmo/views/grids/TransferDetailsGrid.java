@@ -7,7 +7,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class TransferDetails {
+public class TransferDetailsGrid {
 
     private static final int AVATAR_WIDTH = 11;
     private static final String CHAR_TOP_BORDER_OUTER = ".";

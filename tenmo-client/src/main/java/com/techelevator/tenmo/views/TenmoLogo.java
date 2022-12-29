@@ -16,7 +16,9 @@ public class TenmoLogo {
         System.out.println("      /////     ^~~~^     ^~~~^^   ^^^'   ^^^  '^^^'  '^^^  '^^^'    ^~~~^      /////");
         System.out.println("       /////                                                                 /////");
         System.out.println("        ////////////////////////////////////////////////////////////////////////");
-        System.out.println("          //////////////////////////////////////////////////////////////////" + ColorCodes.RESET);
+        System.out.println("          //////////////////////////////////////////////////////////////////");
+        System.out.println("                             Fast, safe, social payments." + ColorCodes.RESET);
+
 
     }
 

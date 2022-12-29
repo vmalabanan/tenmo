@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.views;
+package com.techelevator.tenmo.views.pages;
 
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MakeTransferPage extends BasePage {
 
-    public Transfer getTransferDetails(List<User> users, int transferType){
+    public static Transfer getTransferDetails(List<User> users, int transferType){
         printHeader("Users");
         printListOfUsersAsGrid(users);
         Transfer transfer = new Transfer();
@@ -41,7 +41,7 @@ public class MakeTransferPage extends BasePage {
         return transfer;
     }
 
-    private void printListOfUsers(List<User> users){
+    private static void printListOfUsers(List<User> users){
 
         users.forEach(user -> {
             printLine(user.getId() + " \t" + user.getUsername());
@@ -49,7 +49,7 @@ public class MakeTransferPage extends BasePage {
 
     }
 
-    private void printListOfUsersAsGrid(List<User> users){
+    private static void printListOfUsersAsGrid(List<User> users){
         UserGrid.printUserGrid(users);
     }
 

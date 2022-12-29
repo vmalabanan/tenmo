@@ -1,13 +1,14 @@
-package com.techelevator.tenmo.views;
+package com.techelevator.tenmo.views.pages;
 
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.views.grids.TransferGrid;
+
 import java.util.List;
 
 
 public class ViewTransfersPage extends BasePage {
     // TODO: break this into two functions. Make this a void function bc transfers could be null
-    public int displayTransfers(List<Transfer> transfers, int id, String message) {
+    public static int displayTransfers(List<Transfer> transfers, int id, String message) {
         // print headers
         printHeader("Transfers");
 
@@ -20,21 +21,21 @@ public class ViewTransfersPage extends BasePage {
 
     }
 
-    private void printTransferAsGrid(List<Transfer> transfers, int id) {
+    private static void printTransferAsGrid(List<Transfer> transfers, int id) {
 
         TransferGrid.printTransferGrid(transfers, id);
     }
 
-    public int getPendingTransferOption() {
+    public static int getPendingTransferOption() {
         printLine("1: Approve");
         printLine("2: Reject");
         printLine("---------");
 
-        return getSelection(2);
+        return getSelection();
 
     }
 
-    public Transfer approveOrRejectTransfer(List<Transfer> transfers, int transferId, int option) {
+    public static Transfer approveOrRejectTransfer(List<Transfer> transfers, int transferId, int option) {
         Transfer transfer = new Transfer();
 
         // get transfer from list

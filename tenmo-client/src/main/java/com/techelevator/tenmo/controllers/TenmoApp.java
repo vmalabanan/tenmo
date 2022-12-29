@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controllers;
 import com.techelevator.tenmo.models.*;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.*;
+import com.techelevator.tenmo.views.pages.*;
 
 import java.util.List;
 
@@ -10,7 +11,6 @@ public class TenmoApp
 {
     private static final String API_BASE_URL = "http://localhost:8080/";
 
-    private final UserOutput userOutput = new UserOutput();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService();
 
@@ -26,8 +26,16 @@ public class TenmoApp
 
     public void run()
     {
-        userOutput.printGreeting();
+        // clear screen
+        WelcomePage.clearScreen();
+
+        // Tenmo Logo
+        WelcomePage.printLogo();
+
+        // log in menu
         loginMenu();
+
+        // main menu
         if (currentUser != null)
         {
             mainMenu();
@@ -37,44 +45,58 @@ public class TenmoApp
     private void loginMenu()
     {
         int menuSelection = -1;
-        while (menuSelection != 0 && currentUser == null)
-        {
-            userOutput.printLoginMenu();
-            menuSelection = userOutput.promptForMenuSelection("Please choose an option: ");
-            if (menuSelection == 1)
-            {
-                handleRegister();
-            }
-            else if (menuSelection == 2)
-            {
-                handleLogin();
-            }
-            else if (menuSelection != 0)
-            {
-                System.out.println("Invalid Selection");
-                userOutput.pause();
+
+        // keep looping until user has logged in
+        while (currentUser == null && menuSelection != 0) {
+            // clear screen
+            WelcomePage.clearScreen();
+
+            WelcomePage.printLoginMenu();
+
+            menuSelection = WelcomePage.getSelection("Please choose an option: ");
+
+            switch (menuSelection) {
+                case 1:
+                    handleRegister();
+                    break;
+                case 2:
+                    handleLogin();
+                    break;
+                case 0:
+                    WelcomePage.goodbye();
+                    break;
+                default:
+                    WelcomePage.invalidSelection();
+
+                    // show welcome screen again
+                    run();
             }
         }
+
     }
 
     private void handleRegister()
     {
-        System.out.println("Please register a new user account");
-        UserCredentials credentials = userOutput.promptForCredentials();
+        // clear screen
+        UserCredentialsPage.clearScreen();
+
+        UserCredentials credentials = UserCredentialsPage.getUserCredential("Register");
         if (authenticationService.register(credentials))
         {
-            System.out.println("Registration successful. You can now login.");
+            UserCredentialsPage.printAlertStyle("Registration successful. You can now login.", true);
         }
         else
         {
-            userOutput.printErrorMessage();
+            UserCredentialsPage.printErrorMessage();
         }
     }
 
     private void handleLogin()
     {
-        var page = new UserCredentialsPage();
-        UserCredentials credentials = page.getUserCredential("login");
+        // clear screen
+        UserCredentialsPage.clearScreen();
+
+        UserCredentials credentials = UserCredentialsPage.getUserCredential("Log in");
         var authenticatedUser = authenticationService.login(credentials);
 
         if (authenticatedUser != null)
@@ -84,18 +106,21 @@ public class TenmoApp
         }
         else
         {
-            page.printHeader("Error");
-            page.printRedLine("The login credentials were incorrect");
+            UserCredentialsPage.printHeader("Error");
+            UserCredentialsPage.printRedLine("The login credentials were incorrect");
         }
     }
 
     private void mainMenu()
     {
+        // clear screen
+        MainMenuPage.clearScreen();
+
         int menuSelection = -1;
         while (menuSelection != 0)
         {
-            userOutput.printMainMenu();
-            menuSelection = userOutput.promptForMenuSelection("Please choose an option: ");
+            MainMenuPage.printMenu();
+            menuSelection = MainMenuPage.getSelection("Please choose an option: ");
             if (menuSelection == 1)
             {
                 viewCurrentBalance();
@@ -128,25 +153,26 @@ public class TenmoApp
             {
                 System.out.println("Invalid Selection");
             }
-            userOutput.pause();
+            MainMenuPage.pause();
         }
     }
 
 
     private void viewCurrentBalance()
     {
-        var page = new CurrentBalancePage();
         var balance = accountService.getCurrentBalance();
-        page.displayCurrentBalance(balance);
+        CurrentBalancePage.displayCurrentBalance(balance);
 
     }
 
     private void viewTransferHistory()
     {
-        var page = new ViewTransfersPage();
+        // clear screen
+        ViewTransfersPage.clearScreen();
+
         var transfers = transferService.getAllTransfers();
         int id = currentUser.getUser().getId();
-        int transferId = page.displayTransfers(transfers, id, "Please enter transfer ID to view details (0 to cancel): ");
+        int transferId = ViewTransfersPage.displayTransfers(transfers, id, "Please enter transfer ID to view details (0 to cancel): ");
 
         if (transferId != 0) {
             viewTransferDetails(transfers, transferId, id);
@@ -158,23 +184,27 @@ public class TenmoApp
     // View the details of an individual transfer.
     // Method takes in a list of all transfers and the transferId passed in by the user
     private void viewTransferDetails(List<Transfer> transfers, int transferId, int id) {
-        var page = new ViewTransferDetailsPage();
-        page.displayTransferDetails(transfers, transferId, id);
+        // clear screen
+        ViewTransferDetailsPage.clearScreen();
+
+        ViewTransferDetailsPage.displayTransferDetails(transfers, transferId, id);
     }
 
     // TODO: combine with viewTransferHistory ?
     private void viewPendingRequests()
     {
-        var page = new ViewTransfersPage();
+        // clear screen
+        ViewTransfersPage.clearScreen();
+
         var transfers = transferService.getPendingTransfers();
         int id = currentUser.getUser().getId();
-        int transferId = page.displayTransfers(transfers, id, "Please enter transfer ID to approve/reject (0 to cancel): ");
+        int transferId = ViewTransfersPage.displayTransfers(transfers, id, "Please enter transfer ID to approve/reject (0 to cancel): ");
 
         if (transferId != 0) {
-            int option = page.getPendingTransferOption();
+            int option = ViewTransfersPage.getPendingTransferOption();
 
             if (option != 0) {
-                Transfer transfer = page.approveOrRejectTransfer(transfers, transferId, option); // should this be in MakeTransferPage instead?
+                Transfer transfer = ViewTransfersPage.approveOrRejectTransfer(transfers, transferId, option); // should this be in MakeTransferPage instead?
                 transferService.handleTransfer(transfer);
             }
         }
@@ -186,36 +216,41 @@ public class TenmoApp
     // TODO: Combine sendBucks and requestBucks
     private void sendBucks()
     {
+        // clear screen
+        MakeTransferPage.clearScreen();
 
-        var page = new MakeTransferPage();
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetails(users, 2); // 2 is Send
+        Transfer transfer = MakeTransferPage.getTransferDetails(users, 2); // 2 is Send
 
         transferService.handleTransfer(transfer); // this returns a Transfer object but we're not doing anything with it right now
     }
 
     private void requestBucks()
     {
-        var page = new MakeTransferPage();
+        // clear screen
+        MakeTransferPage.clearScreen();
+
         var users = userService.getAllUsers();
-        Transfer transfer = page.getTransferDetails(users, 1); // 1 is Request
+        Transfer transfer = MakeTransferPage.getTransferDetails(users, 1); // 1 is Request
 
         transferService.handleTransfer(transfer);
     }
 
     private void changeAvatar() {
-        var page = new ChangeAvatarPage(currentUser.getUser().getAvatar());
-        page.displayCurrentAvatar();
-        int choice = page.getChangeAvatarSelection();
+        // clear screen
+        ChangeAvatarPage.clearScreen();
+
+        ChangeAvatarPage.displayCurrentAvatar(currentUser.getUser().getAvatar());
+        int choice = ChangeAvatarPage.getChangeAvatarSelection();
 
         // change avatar
         if (choice == 1 || choice == 3) {
             List<Avatar> avatars = avatarService.getAllAvatars();
-            page.displayAvatars(avatars);
-            int selection = page.getSelection(avatars.size());
+            ChangeAvatarPage.displayAvatars(avatars);
+            int selection = ChangeAvatarPage.getSelection();
 
             if (selection != 0) {
-                Avatar avatar = page.makeAvatarSelection(avatars, selection);
+                Avatar avatar = ChangeAvatarPage.makeAvatarSelection(avatars, selection);
                 Avatar newAvatar = avatarService.changeAvatar(avatar);
                 // Set the currentUser's avatar
                 // (because the avatar is only pulled from the server once, on login.
@@ -233,14 +268,15 @@ public class TenmoApp
     }
 
     private void changeAvatarColor() {
-        var page = new ChangeAvatarColorPage(currentUser.getUser().getAvatar());
+        // clear screen
+        ChangeAvatarColorPage.clearScreen();
 
         List<Color> colors = colorService.getAllColors();
-        page.displayColors(colors);
-        int selection = page.getSelection(colors.size());
+        ChangeAvatarColorPage.displayColors(colors);
+        int selection = ChangeAvatarColorPage.getSelection();
 
         if (selection != 0) {
-            Color color = page.makeColorSelection(colors, selection);
+            Color color = ChangeAvatarColorPage.makeColorSelection(colors, selection);
             Color newColor = colorService.changeColor(color);
             // Set the currentUser's avatar color
             // (because the avatar, including color, is only pulled from the server once, on login.

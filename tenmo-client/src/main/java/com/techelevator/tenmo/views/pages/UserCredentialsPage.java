@@ -1,9 +1,10 @@
-package com.techelevator.tenmo.views;
+package com.techelevator.tenmo.views.pages;
 
 import com.techelevator.tenmo.models.UserCredentials;
+import com.techelevator.tenmo.views.pages.BasePage;
 
 public class UserCredentialsPage extends BasePage {
-    public UserCredentials getUserCredential(String pageName)
+    public static UserCredentials getUserCredential(String pageName)
     {
         printHeader(pageName);
 

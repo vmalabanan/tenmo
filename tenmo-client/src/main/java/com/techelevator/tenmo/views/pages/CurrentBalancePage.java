@@ -1,12 +1,10 @@
-package com.techelevator.tenmo.views;
-
-import com.techelevator.tenmo.models.Account;
+package com.techelevator.tenmo.views.pages;
 
 import java.math.BigDecimal;
 
 public class CurrentBalancePage extends BasePage {
 
-    public void displayCurrentBalance(BigDecimal balance){
+    public static void displayCurrentBalance(BigDecimal balance){
 
         printHeader("Current Balance");
         printLine(String.valueOf(balance));

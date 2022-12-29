@@ -1,14 +1,14 @@
-package com.techelevator.tenmo.views;
+package com.techelevator.tenmo.views.pages;
 
 import com.techelevator.tenmo.models.exceptions.IncorrectTransferIdException;
 import com.techelevator.tenmo.models.Transfer;
-import com.techelevator.tenmo.views.grids.TransferDetails;
+import com.techelevator.tenmo.views.grids.TransferDetailsGrid;
 
 import java.util.List;
 
 public class ViewTransferDetailsPage extends BasePage {
 
-    public void displayTransferDetails(List<Transfer> transfers, int transferId, int id) {
+    public static void displayTransferDetails(List<Transfer> transfers, int transferId, int id) {
         Transfer transfer = null;
 
         // check to see if the requested transfer is in the list
@@ -27,13 +27,8 @@ public class ViewTransferDetailsPage extends BasePage {
 
             printHeader("Transfer Details");
             printLine("Transfer ID " + transfer.getTransferId());
-            TransferDetails.printTransferDetails(transfer, id);
-//            printLine("ID: " + transfer.getTransferId());
-//            printLine("From: " + transfer.getUserFrom().getUsername());
-//            printLine("To: " + transfer.getUserTo().getUsername());
-//            printLine("Type: " + transfer.getTransferTypeDesc());
-//            printLine("Status: " + transfer.getTransferStatusDesc());
-//            printLine("Amount: $" + transfer.getAmount());
+            TransferDetailsGrid.printTransferDetails(transfer, id);
+
         } catch (IncorrectTransferIdException e) {
             // TODO - do something with exception
         }
