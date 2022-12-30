@@ -252,8 +252,7 @@ public class TenmoApp
             // let the user know whether the transfer was successful
             transferOutcomeAlert(transfer);
         }
-
-        mainMenu();
+        
     }
 
     // View the details of an individual transfer.
@@ -332,8 +331,6 @@ public class TenmoApp
         if (option == 2 || option == 3) {
             changeAvatarColor();
         }
-        // return to menu
-        mainMenu();
     }
 
     private void changeAvatarColor() {

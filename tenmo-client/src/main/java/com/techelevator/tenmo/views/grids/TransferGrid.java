@@ -21,16 +21,20 @@ public class TransferGrid {
     private static final int NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME = 3;
     private static final int NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT = 15;
     private static final int NUM_SPACES_AFTER_AMOUNT = 3;
+    private static final int LENGTH_OF_DATE = 6;
+    private static final int LENGTH_OF_STATUS = 8;
 
     private static int numSpacesAfterAvatar;
     private static int numSpacesLeftOfCell;
     private static int numSpacesInCell;
     private static int lengthLongestUsername;
+    private static int numSpacesBetweenDateAndStatus;
     private static String strLeftSpacing;
     private static String strSpacingBeforeAvatar;
     private static String strSpacingAfterAvatar;
     private static String strSpacingAfterAvatarBeforeUsername;
     private static String strSpacingAfterAmount;
+    private static String strSpacingBetweenDateAndStatus;
 
 
     public static void printTransferGrid(List<Transfer> transfers, int id) {
@@ -110,16 +114,16 @@ public class TransferGrid {
                 // format transfer id to have a width = numSpacesToLeftOfCell, justified left
                 line += String.format("%-"+ numSpacesLeftOfCell +"d", transfer.getTransferId());
                 line += CHAR_LEFT_RIGHT_BORDER + strSpacingBeforeAvatar + color + userToDisplay.getAvatar().getAvatarLine3() + strSpacingAfterAvatarBeforeUsername + colorReset;
-                // format date to have a width = longest username, justified left
-                line += String.format("%-"+ lengthLongestUsername +"s", getFormattedDate(transfer));
+                // format date to have a width = length of date (6), justified left
+                line += String.format("%-"+ LENGTH_OF_DATE +"s", getFormattedDate(transfer)) + strSpacingBetweenDateAndStatus;
                 String status = transfer.getTransferStatusDesc();
                 // transfer status should be color coded according to rejected, approved, pending
                 if (status.equalsIgnoreCase("Approved")) {line += ColorCodes.BLUE;}
                 else if (status.equalsIgnoreCase("Pending")) {line += ColorCodes.YELLOW;}
                 else {line += ColorCodes.PURPLE;}
 
-                // format transfer status to have a width = number of spaces after longest username to the end of amount, justified right
-                line += String.format("%"+ (NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT) +"s", status) + strSpacingAfterAmount + ColorCodes.RESET;
+                // format transfer status to have a length = transfer status length (8), justified right
+                line += String.format("%"+ (LENGTH_OF_STATUS) +"s", status) + strSpacingAfterAmount + ColorCodes.RESET;
                 break;
             case 5:
                 line += color + userToDisplay.getAvatar().getAvatarLine4() + strSpacingAfterAvatar + colorReset;
@@ -186,6 +190,7 @@ public class TransferGrid {
         lengthLongestUsername = longestUsername.length();
         numSpacesInCell = NUM_SPACES_BEFORE_AVATAR + AVATAR_WIDTH + NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME + lengthLongestUsername + NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT + NUM_SPACES_AFTER_AMOUNT;
         numSpacesAfterAvatar = NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME + lengthLongestUsername + NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT + NUM_SPACES_AFTER_AMOUNT;
+        numSpacesBetweenDateAndStatus = numSpacesAfterAvatar - NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME - NUM_SPACES_AFTER_AMOUNT - LENGTH_OF_DATE - LENGTH_OF_STATUS;
         }
     }
 
@@ -222,6 +227,12 @@ public class TransferGrid {
             spacing += " ";
         }
         strSpacingAfterAmount = spacing;
+
+        spacing = "";
+        for (int i = 0; i < numSpacesBetweenDateAndStatus; i++) {
+            spacing += " ";
+        }
+        strSpacingBetweenDateAndStatus = spacing;
 
     }
 

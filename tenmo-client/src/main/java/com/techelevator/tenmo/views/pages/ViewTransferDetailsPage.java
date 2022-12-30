@@ -33,7 +33,7 @@ public class ViewTransferDetailsPage extends BasePage {
             // TODO - do something with exception
         }
 
-        getValue("Press enter to continue");
+        pause();
 
     }
 }
