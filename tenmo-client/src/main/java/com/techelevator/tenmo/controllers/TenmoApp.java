@@ -280,16 +280,14 @@ public class TenmoApp
         // clear screen
         ChangeAvatarPage.clearScreen();
 
-        ChangeAvatarPage.displayCurrentAvatar(currentUser.getUser().getAvatar());
+        ChangeAvatarPage.displayCurrentAvatarAndOptions(currentUser.getUser().getAvatar());
 
-        ChangeAvatarPage.changeAvatarOptions();
-
-        int option = ChangeAvatarPage.getSelection("Please make a selection: ");
+        int option = ChangeAvatarPage.getSelection("Please choose an option: ");
 
         // verify option selected
         while (option < 0 || option > 3) {
             ChangeAvatarPage.printAlertStyle("Invalid selection. Please try again.", false);
-            option = ChangeAvatarPage.getSelection("Please make a selection: ");
+            option = ChangeAvatarPage.getSelection("Please choose an option: ");
         }
 
         // return to previous menu if user wants to cancel
@@ -319,7 +317,7 @@ public class TenmoApp
 
             // let user know if action was a success
             if (newAvatar != null) {
-                ChangeAvatarPage.printAlertStyle("Avatar successfully changed to " + newAvatar.getAvatarDesc(), true);
+                ChangeAvatarPage.printAlertStyle("Avatar successfully changed to " + newAvatar.getAvatarDesc().toLowerCase(), true);
                 // Set the currentUser's avatar
                 // (because the avatar is only pulled from the server once, on login.
                 // So when any changes are made, they have to be set here)
@@ -362,7 +360,7 @@ public class TenmoApp
 
         // let user know if action was a success
         if (newColor != null) {
-            ChangeAvatarColorPage.printAlertStyle("Avatar color successfully changed to " + newColor.getColorDesc(), true);
+            ChangeAvatarColorPage.printAlertStyle("Avatar color successfully changed to " + newColor.getColorDesc().toLowerCase(), true);
             // Set the currentUser's avatar color
             // (because the avatar, including color, is only pulled from the server once, on login.
             // So when any changes are made, they have to be set here)
