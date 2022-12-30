@@ -3,6 +3,8 @@ package com.techelevator.tenmo.views.grids;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.views.constants.ColorCodes;
+import com.techelevator.tenmo.views.pages.DisplayAvatar;
+
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +32,7 @@ public class TransferDetailsGrid {
     private static int numSpacesAfterStatus;
     private static int numSpacesAfterType;
     private static int numSpacesAfterDate;
+    private static int numSpacesAfterUserTo;
 
     private static String strLeftSpacing;
     private static String strSpacingInCell;
@@ -41,6 +44,7 @@ public class TransferDetailsGrid {
     private static String strSpacingAfterStatus;
     private static String strSpacingAfterType;
     private static String strSpacingAfterDate;
+    private static String strSpacingAfterUserTo;
 
 
     public static void printTransferDetails(Transfer transfer, int id) {
@@ -78,6 +82,10 @@ public class TransferDetailsGrid {
     private static String lineBuilder(Transfer transfer, int id, int row) {
         User userFr = transfer.getUserFrom();
         User userTo = transfer.getUserTo();
+
+        DisplayAvatar userFrDisplay = new DisplayAvatar(userFr.getAvatar());
+        DisplayAvatar userToDisplay = new DisplayAvatar(userTo.getAvatar());
+
         // to format amount as money
         NumberFormat n = NumberFormat.getCurrencyInstance();
 
@@ -87,28 +95,28 @@ public class TransferDetailsGrid {
 
         switch (row) {
             case 2:
-                line += userFr.getAvatar().getAvatarLine1() + strSpacingBetweenAvatars;
-                line += userTo.getAvatar().getAvatarLine1() + strSpacingPaddingLeftRight;
+                line += userFrDisplay.getLine(1) + strSpacingBetweenAvatars;
+                line += userToDisplay.getLine(1) + strSpacingPaddingLeftRight;
                 break;
             case 3:
-                line += userFr.getAvatar().getAvatarLine2() + strSpacingBetweenAvatars;
-                line += userTo.getAvatar().getAvatarLine2() + strSpacingPaddingLeftRight;
+                line += userFrDisplay.getLine(2) + strSpacingBetweenAvatars;
+                line += userToDisplay.getLine(2) + strSpacingPaddingLeftRight;
                 break;
             case 4:
-                line += userFr.getAvatar().getAvatarLine3() + strSpacingBetweenAvatars;
-                line += userTo.getAvatar().getAvatarLine3() + strSpacingPaddingLeftRight;
+                line += userFrDisplay.getLine(3) + strSpacingBetweenAvatars;
+                line += userToDisplay.getLine(3) + strSpacingPaddingLeftRight;
                 break;
             case 5:
-                line += userFr.getAvatar().getAvatarLine4() + strSpacingBetweenAvatars;
-                line += userTo.getAvatar().getAvatarLine4() + strSpacingPaddingLeftRight;
+                line += userFrDisplay.getLine(4) + strSpacingBetweenAvatars;
+                line += userToDisplay.getLine(4) + strSpacingPaddingLeftRight;
                 break;
             case 6:
-                line += userFr.getAvatar().getAvatarLine5() + strSpacingBetweenAvatars;
-                line += userTo.getAvatar().getAvatarLine5() + strSpacingPaddingLeftRight;
+                line += userFrDisplay.getLine(5) + strSpacingBetweenAvatars;
+                line += userToDisplay.getLine(5) + strSpacingPaddingLeftRight;
                 break;
             case 7:
                 line += "From: " + userFr.getUsername() + strSpacingBetweenUsernames;
-                line += "To: " + userTo.getUsername() + strSpacingPaddingLeftRight;
+                line += "To: " + userTo.getUsername() + strSpacingAfterUserTo;
                 break;
             case 8: // 8 is a special case; reset line
                 line = strLeftSpacing + CHAR_LEFT_RIGHT_BORDER + strSpacingInCell;
@@ -164,7 +172,17 @@ public class TransferDetailsGrid {
             numSpacesInCell = Math.max(NUM_SPACES_PADDING_LEFT_RIGHT * 2 + MAX_LENGTH_MESSAGE, NUM_SPACES_PADDING_LEFT_RIGHT * 2 + lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5);
 
             numSpacesBetweenAvatars = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - (AVATAR_WIDTH * 2);
-            numSpacesBetweenUsernames = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - lengthFromTo - lengthUsernameFrom - lengthUsernameTo;
+
+            // if To: usernameTo is less than or equal to avatar width, just set the spacing so that it starts where the userTo avatar starts
+            if (lengthUsernameTo + "To: ".length() <= AVATAR_WIDTH) {
+                numSpacesBetweenUsernames = numSpacesBetweenAvatars + AVATAR_WIDTH - (lengthUsernameFrom + "From: ".length());
+                numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT + AVATAR_WIDTH - (lengthUsernameTo + "To: ".length());
+            }
+            else {
+                numSpacesBetweenUsernames = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - lengthFromTo - lengthUsernameFrom - lengthUsernameTo;
+                numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT;
+            }
+
             numSpacesAfterMessage = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthFor - transfer.getTransferMessage().length();
             numSpacesAfterAmount = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthAmount - transfer.getAmount().toString().length();
             numSpacesAfterStatus = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthStatus - transfer.getTransferStatusDesc().length();
@@ -238,6 +256,12 @@ public class TransferDetailsGrid {
             spacing += " ";
         }
         strSpacingAfterDate = spacing;
+
+        spacing = "";
+        for (int i = 0; i < numSpacesAfterUserTo; i++) {
+            spacing += " ";
+        }
+        strSpacingAfterUserTo = spacing;
     }
 
 

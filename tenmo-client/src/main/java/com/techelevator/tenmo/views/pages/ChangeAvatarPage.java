@@ -22,10 +22,6 @@ public class ChangeAvatarPage extends BasePage {
         printLine("0: Cancel");
     }
 
-    public static int getChangeAvatarSelection() {
-        changeAvatarOptions();
-        return getSelection();
-    }
 
     public static Avatar makeAvatarSelection(List<Avatar> avatars, int choice) {
         return avatars.get(choice - 1);

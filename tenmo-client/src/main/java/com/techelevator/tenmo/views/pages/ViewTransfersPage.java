@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ViewTransfersPage extends BasePage {
 
-    public static void displayTransfers(List<Transfer> transfers, int id) {
+    public static void displayTransfers(List<Transfer> transfers, int id, String header) {
         // print headers
-        printHeader("Transfers");
+        printHeader(header);
 
         // print transfers
        printTransferAsGrid(transfers, id);

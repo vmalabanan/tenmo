@@ -189,7 +189,14 @@ public class TenmoApp
         // otherwise, display the transfers
         else {
             id = currentUser.getUser().getId();
-            ViewTransfersPage.displayTransfers(transfers, id);
+            String header;
+            if (showOnlyPending) {
+                header = "Pending Transfers";
+            }
+            else {
+                header = "Transfers";
+            }
+            ViewTransfersPage.displayTransfers(transfers, id, header);
         }
 
         // CHECK TRANSFER ID
@@ -257,7 +264,7 @@ public class TenmoApp
 
         ViewTransferDetailsPage.displayTransferDetails(transfers, transferId, id);
     }
-    
+
     private void sendBucks()
     {
         makeTransfer(2);
@@ -274,26 +281,57 @@ public class TenmoApp
         ChangeAvatarPage.clearScreen();
 
         ChangeAvatarPage.displayCurrentAvatar(currentUser.getUser().getAvatar());
-        int choice = ChangeAvatarPage.getChangeAvatarSelection();
+
+        ChangeAvatarPage.changeAvatarOptions();
+
+        int option = ChangeAvatarPage.getSelection("Please make a selection: ");
+
+        // verify option selected
+        while (option < 0 || option > 3) {
+            ChangeAvatarPage.printAlertStyle("Invalid selection. Please try again.", false);
+            option = ChangeAvatarPage.getSelection("Please make a selection: ");
+        }
+
+        // return to previous menu if user wants to cancel
+        if (option == 0) {
+            return;
+        }
 
         // change avatar
-        if (choice == 1 || choice == 3) {
+        if (option == 1 || option == 3) {
             List<Avatar> avatars = avatarService.getAllAvatars();
             ChangeAvatarPage.displayAvatars(avatars);
             int selection = ChangeAvatarPage.getSelection();
 
-            if (selection != 0) {
-                Avatar avatar = ChangeAvatarPage.makeAvatarSelection(avatars, selection);
-                Avatar newAvatar = avatarService.changeAvatar(avatar);
+            // verify option selected
+            while (selection < 0 || selection > 6) {
+                ChangeAvatarPage.printAlertStyle("Invalid selection. Please try again.", false);
+                selection = ChangeAvatarPage.getSelection();
+            }
+
+            // return to previous menu if user wants to cancel
+            if (selection == 0) {
+                return;
+            }
+
+            Avatar avatar = ChangeAvatarPage.makeAvatarSelection(avatars, selection);
+            Avatar newAvatar = avatarService.changeAvatar(avatar);
+
+            // let user know if action was a success
+            if (newAvatar != null) {
+                ChangeAvatarPage.printAlertStyle("Avatar successfully changed to " + newAvatar.getAvatarDesc(), true);
                 // Set the currentUser's avatar
                 // (because the avatar is only pulled from the server once, on login.
                 // So when any changes are made, they have to be set here)
                 currentUser.getUser().setAvatar(newAvatar);
-
             }
+            else {
+                ChangeAvatarPage.printAlertStyle("Avatar not changed. Please try again", true);
+            }
+
         }
         // change avatar color
-        if (choice == 2 || choice == 3) {
+        if (option == 2 || option == 3) {
             changeAvatarColor();
         }
         // return to menu
@@ -308,14 +346,30 @@ public class TenmoApp
         ChangeAvatarColorPage.displayColors(colors);
         int selection = ChangeAvatarColorPage.getSelection();
 
-        if (selection != 0) {
-            Color color = ChangeAvatarColorPage.makeColorSelection(colors, selection);
-            Color newColor = colorService.changeColor(color);
+        // verify option selected
+        while (selection < 0 || selection > 6) {
+            ChangeAvatarColorPage.printAlertStyle("Invalid selection. Please try again.", false);
+            selection = ChangeAvatarColorPage.getSelection();
+        }
+
+        // return to previous menu if user wants to cancel
+        if (selection == 0) {
+            return;
+        }
+
+        Color color = ChangeAvatarColorPage.makeColorSelection(colors, selection);
+        Color newColor = colorService.changeColor(color);
+
+        // let user know if action was a success
+        if (newColor != null) {
+            ChangeAvatarColorPage.printAlertStyle("Avatar color successfully changed to " + newColor.getColorDesc(), true);
             // Set the currentUser's avatar color
             // (because the avatar, including color, is only pulled from the server once, on login.
             // So when any changes are made, they have to be set here)
             currentUser.getUser().getAvatar().setColor(newColor);
-
+        }
+        else {
+            ChangeAvatarColorPage.printAlertStyle("Avatar color not changed. Please try again", true);
         }
     }
 
