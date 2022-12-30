@@ -7,17 +7,13 @@ import java.util.List;
 
 
 public class ViewTransfersPage extends BasePage {
-    // TODO: break this into two functions. Make this a void function bc transfers could be null
-    public static int displayTransfers(List<Transfer> transfers, int id, String message) {
+
+    public static void displayTransfers(List<Transfer> transfers, int id) {
         // print headers
         printHeader("Transfers");
 
-
         // print transfers
-        if (transfers == null) {print("No transfers to display.");}
-        else {printTransferAsGrid(transfers, id);}
-
-        return getIntValue(message);
+       printTransferAsGrid(transfers, id);
 
     }
 
@@ -26,39 +22,14 @@ public class ViewTransfersPage extends BasePage {
         TransferGrid.printTransferGrid(transfers, id);
     }
 
-    public static int getPendingTransferOption() {
+    public static int getApproveOrRejectChoice() {
         printLine("1: Approve");
         printLine("2: Reject");
+        printLine("0: Cancel");
         printLine("---------");
 
         return getSelection();
 
     }
 
-    public static Transfer approveOrRejectTransfer(List<Transfer> transfers, int transferId, int option) {
-        Transfer transfer = new Transfer();
-
-        // get transfer from list
-        for (Transfer t : transfers) {
-            if (t.getTransferId() == transferId) {
-                transfer = t;
-                break;
-            }
-        }
-
-        // set transfer status
-        // if user wants to approve transfer
-        // set transferStatusId = 2 (Approved)
-        if (option == 1) {
-            transfer.setTransferStatusId(2);
-        }
-        // otherwise, i.e., if user wants to reject transfer
-        // set transferStatusId = 3 (Rejected)
-        else {
-            transfer.setTransferStatusId(3);
-        }
-
-        return transfer;
-
-    }
 }

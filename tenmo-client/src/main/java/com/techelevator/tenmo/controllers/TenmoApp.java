@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controllers;
 import com.techelevator.tenmo.models.*;
 import com.techelevator.tenmo.models.exceptions.InsufficientFundsException;
 import com.techelevator.tenmo.models.exceptions.InvalidAmountException;
+import com.techelevator.tenmo.models.exceptions.InvalidTransferIdException;
 import com.techelevator.tenmo.models.exceptions.InvalidUserIdException;
 import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.views.pages.*;
@@ -162,22 +163,87 @@ public class TenmoApp
 
     private void viewTransferHistory()
     {
+        viewTransfers(false);
+    }
+
+    private void viewPendingRequests()
+    {
+        viewTransfers(true);
+    }
+
+    private void viewTransfers(boolean showOnlyPending) {
         // clear screen
         ViewTransfersPage.clearScreen();
 
-        var transfers = transferService.getAllTransfers();
+        int id;
 
-        // if there are no transfers
+        var transfers = showOnlyPending ? transferService.getPendingTransfers()
+                                                    : transferService.getAllTransfers();
+
+        // if there are no pending requests
         if (transfers.size() == 0) {
             ViewTransfersPage.printAlertStyle("No transfers to display.", true);
             return;
         }
 
-        int id = currentUser.getUser().getId();
-        int transferId = ViewTransfersPage.displayTransfers(transfers, id, "Please enter transfer ID to view details (0 to cancel): ");
+        // otherwise, display the transfers
+        else {
+            id = currentUser.getUser().getId();
+            ViewTransfersPage.displayTransfers(transfers, id);
+        }
 
-        if (transferId != 0) {
+        // CHECK TRANSFER ID
+        Transfer transfer = null;
+        int transferId = -1;
+
+        while (transfer == null) {
+            transferId = showOnlyPending ? ViewTransfersPage.getSelection("Please enter transfer ID to approve/reject (0 to cancel): ")
+                                         : ViewTransfersPage.getSelection("Please enter transfer ID to view details (0 to cancel): ");
+
+            // break if user selects 0
+            if (transferId == 0) {
+                break;
+            }
+
+            transfer = checkTransferId(transfers, transferId);
+        }
+
+        // return to previous menu if user selects 0
+        if (transferId == 0) {
+            return;
+        }
+
+        if (!showOnlyPending) {
             viewTransferDetails(transfers, transferId, id);
+        }
+
+        else {
+            // CHECK IF APPROVE/REJECT OPTION IS VALID
+            int option = ViewTransfersPage.getApproveOrRejectChoice();
+
+            while (option < 0 || option > 2) {
+                ViewTransfersPage.printAlertStyle("Invalid selection. Please try again.", false);
+                option = ViewTransfersPage.getSelection();
+            }
+
+            // go back to previous screen if user wants to cancel
+            if (option == 0) {
+                return;
+            }
+            // if user wants to approve transfer
+            else if (option == 1) {
+                transfer.setTransferStatusId(2);
+            }
+            // if user wants to reject transfer
+            else if (option == 2){
+                transfer.setTransferStatusId(3);
+            }
+
+            // send transfer request to the server
+            Transfer newTransfer = transferService.handleTransfer(transfer);
+
+            // let the user know whether the transfer was successful
+            transferOutcomeAlert(transfer);
         }
 
         mainMenu();
@@ -191,37 +257,7 @@ public class TenmoApp
 
         ViewTransferDetailsPage.displayTransferDetails(transfers, transferId, id);
     }
-
-    // TODO: combine with viewTransferHistory ?
-    private void viewPendingRequests()
-    {
-        // clear screen
-        ViewTransfersPage.clearScreen();
-
-        var transfers = transferService.getPendingTransfers();
-
-        // if there are no pending requests
-        if (transfers.size() == 0) {
-            ViewTransfersPage.printAlertStyle("No transfers to display.", true);
-            return;
-        }
-
-        int id = currentUser.getUser().getId();
-        int transferId = ViewTransfersPage.displayTransfers(transfers, id, "Please enter transfer ID to approve/reject (0 to cancel): ");
-
-        if (transferId != 0) {
-            int option = ViewTransfersPage.getPendingTransferOption();
-
-            if (option != 0) {
-                Transfer transfer = ViewTransfersPage.approveOrRejectTransfer(transfers, transferId, option); // should this be in MakeTransferPage instead?
-                transferService.handleTransfer(transfer);
-            }
-        }
-
-        mainMenu();
-
-    }
-
+    
     private void sendBucks()
     {
         makeTransfer(2);
@@ -361,19 +397,38 @@ public class TenmoApp
         Transfer newTransfer = transferService.handleTransfer(transfer);
 
         // let the user know whether the transfer was successful
-        transferOutcomeAlert(newTransfer, transferType);
+        transferOutcomeAlert(newTransfer);
     }
 
-    private void transferOutcomeAlert(Transfer transfer, int transferType) {
+    private void transferOutcomeAlert(Transfer transfer) {
         if (transfer != null) {
             // to format amount as money
             NumberFormat n = NumberFormat.getCurrencyInstance();
-            if (transferType == 2) {
+
+            // if transfer is a Send
+            if (transfer.getTransferTypeId() == 2) {
                 MakeTransferPage.printAlertStyle("Transfer successful. " + n.format(transfer.getAmount()) + " sent to user " + transfer.getUserTo().getUsername() + ", ID: " + transfer.getUserTo().getId() + ".", true);
             }
+
+            // if transfer is a Request
             else {
-                MakeTransferPage.printAlertStyle("Request successful. " + n.format(transfer.getAmount()) + " requested from user " + transfer.getUserFrom().getUsername() + ", ID: " + transfer.getUserFrom().getId() + ".", true);
+                // if transfer was initiated by the user
+                if (transfer.getUserTo().getId() == currentUser.getUser().getId()){
+                        MakeTransferPage.printAlertStyle("Request successful. " + n.format(transfer.getAmount()) + " requested from user " + transfer.getUserFrom().getUsername() + ", ID: " + transfer.getUserFrom().getId() + ".", true);
+                }
+                // if transfer is a Request initiated by another user
+                else  {
+                    // if current user approved the request
+                    if (transfer.getTransferStatusId() == 2) {
+                        MakeTransferPage.printAlertStyle("Request " + transfer.getTransferId() + " approved. " + n.format(transfer.getAmount()) + " sent to user " + transfer.getUserTo().getUsername() + ", ID: " + transfer.getUserTo().getId() + ".", true);
+                    }
+                    // if current user rejected the request
+                    else {
+                        MakeTransferPage.printAlertStyle("Request " + transfer.getTransferId() + " rejected.", true);
+                    }
+                }
             }
+
         } else {
             MakeTransferPage.printAlertStyle("Request not successful. Please try again.", true);
         }
@@ -450,6 +505,35 @@ public class TenmoApp
 
     private void handleException(Exception e) {
         BasePage.printAlertStyle(e.getMessage() + " Please try again.", false);
+    }
+
+    private Transfer checkTransferId(List<Transfer> transfers, int transferId) {
+        Transfer transfer;
+
+        // check if there is a user in users with userId = selection
+        transfer = getTransfer(transfers, transferId);
+
+        // if not (i.e., selection isn't valid),
+        // throw an InvalidTransferIdException
+        try {
+            if (transfer == null) {
+                throw new InvalidTransferIdException(transferId);
+            }
+        } catch (Exception e) {
+            handleException(e);
+        }
+        return transfer;
+    }
+
+    private Transfer getTransfer(List<Transfer> transfers, int transferId) {
+        Transfer transfer = null;
+
+        for (Transfer t : transfers) {
+            if (t.getTransferId() == transferId) {
+                transfer = t;
+            }
+        }
+        return transfer;
     }
 
 }
