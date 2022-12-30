@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.views.grids;
 
 import com.techelevator.tenmo.models.User;
+import com.techelevator.tenmo.views.pages.DisplayAvatar;
 
 import java.util.List;
 
@@ -12,8 +13,8 @@ public class UserGrid {
     private static final String CHAR_LEFT_RIGHT_BORDER = "|";
     private static final int SPACES_AFTER_ID = 1;
     private static final int SPACES_BEFORE_AVATAR = 1;
-    private static final int SPACES_AFTER_AVATAR_BEFORE_USERNAME = 2;
-    private static final int SPACES_AFTER_LONGEST_USERNAME = 2;
+    private static final int SPACES_AFTER_AVATAR_BEFORE_USERNAME = 3;
+    private static final int SPACES_AFTER_LONGEST_USERNAME = 3;
 
     private static int numOfSpacesToLeftOfCell;
     private static int numOfSpacesInCell;
@@ -70,27 +71,28 @@ public class UserGrid {
 
     // for rows 2-6 of each item
     private static String lineBuilder(User user, int row) {
+        DisplayAvatar displayAvatar = new DisplayAvatar(user.getAvatar());
         String line = leftSpacing + CHAR_LEFT_RIGHT_BORDER + spacingBeforeAvatar;
         switch (row) {
             case 2:
-                line += user.getAvatar().getAvatarLine1() + spacingAfterAvatar;
+                line += displayAvatar.getLine(1) + spacingAfterAvatar;
                 break;
             case 3:
-                line += user.getAvatar().getAvatarLine2() + spacingAfterAvatar;
+                line += displayAvatar.getLine(2) + spacingAfterAvatar;
                 break;
             case 4:
                 line = ""; // line 4 is a special case; reset line's value
                 // format id to have a width = numOfSpacesToLeftOfCell, justified left
                 line += String.format("%-"+ numOfSpacesToLeftOfCell +"d", user.getId());
-                line += CHAR_LEFT_RIGHT_BORDER + spacingBeforeAvatar + user.getAvatar().getAvatarLine3() + spacingAfterAvatarBeforeUsername;
+                line += CHAR_LEFT_RIGHT_BORDER + spacingBeforeAvatar + displayAvatar.getLine(3) + spacingAfterAvatarBeforeUsername;
                 // format usernameTo to have a width = longestUsernameLength + spacing, justified left
                 line += String.format("%-"+ (longestUsernameLength + SPACES_AFTER_LONGEST_USERNAME) +"s", user.getUsername());
                 break;
             case 5:
-                line += user.getAvatar().getAvatarLine4() + spacingAfterAvatar;
+                line += displayAvatar.getLine(4) + spacingAfterAvatar;
                 break;
             case 6:
-                line += user.getAvatar().getAvatarLine5() + spacingAfterAvatar;
+                line += displayAvatar.getLine(5) + spacingAfterAvatar;
                 break;
         }
 

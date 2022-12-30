@@ -51,6 +51,10 @@ public abstract class BasePage
         printAlertStyle("Invalid selection. Please try again.", true);
     }
 
+    public static void invalidSelection(String message) {
+        printAlertStyle(message + " Please try again.", true);
+    }
+
     public static void pause() {
         print("Press Enter to continue... ");
         console.nextLine();

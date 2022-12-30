@@ -104,7 +104,8 @@ public class JdbcUserDao implements UserDao
                 "JOIN avatar as a " +
                 "ON tu.avatar_id = a.avatar_id " +
                 "JOIN avatar_color as ac " +
-                "ON tu.avatar_color_id = ac.avatar_color_id;";
+                "ON tu.avatar_color_id = ac.avatar_color_id " +
+                "ORDER BY tu.user_id;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next())
@@ -230,61 +231,60 @@ public class JdbcUserDao implements UserDao
     // Avatars can be changed on client side; this just sets the default when an account is first registered
     private int getAvatarId(String username) {
         char c = username.charAt(0);
-        // using placeholder IDs for now, 1-6
-        // TODO: Update the returns once I add all the avatars to the avatar table
+
         switch(c) {
             case 'a':
-                return 1;
+                return 7;
             case 'b':
-                return 2;
+                return 8;
             case 'c':
-                return 3;
+                return 9;
             case 'd':
-                return 4;
+                return 10;
             case 'e':
-                return 5;
+                return 11;
             case 'f':
-                return 6;
+                return 12;
             case 'g':
-                return 1;
+                return 13;
             case 'h':
-                return 2;
+                return 14;
             case 'i':
-                return 3;
+                return 15;
             case 'j':
-                return 4;
+                return 16;
             case 'k':
-                return 5;
+                return 17;
             case 'l':
-                return 6;
+                return 18;
             case 'm':
-                return 1;
+                return 19;
             case 'n':
-                return 2;
+                return 20;
             case 'o':
-                return 3;
+                return 21;
             case 'p':
-                return 4;
+                return 22;
             case 'q':
-                return 5;
+                return 23;
             case 'r':
-                return 6;
+                return 24;
             case 's':
-                return 1;
+                return 25;
             case 't':
-                return 2;
+                return 26;
             case 'u':
-                return 3;
+                return 27;
             case 'v':
-                return 4;
+                return 28;
             case 'w':
-                return 5;
+                return 29;
             case 'x':
-                return 6;
+                return 30;
             case 'y':
-                return 4;
+                return 31;
             case 'z':
-                return 5;
+                return 32;
             default:
                 return 6;
         }

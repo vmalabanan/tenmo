@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.views.pages;
 
-import com.techelevator.tenmo.models.exceptions.IncorrectTransferIdException;
+import com.techelevator.tenmo.models.exceptions.InvalidTransferIdException;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.views.grids.TransferDetailsGrid;
 
@@ -22,14 +22,14 @@ public class ViewTransferDetailsPage extends BasePage {
             }
 
             if (transfer == null) {
-                throw new IncorrectTransferIdException();
+                throw new InvalidTransferIdException(transferId);
             }
 
             printHeader("Transfer Details");
             printLine("Transfer ID " + transfer.getTransferId());
             TransferDetailsGrid.printTransferDetails(transfer, id);
 
-        } catch (IncorrectTransferIdException e) {
+        } catch (InvalidTransferIdException e) {
             // TODO - do something with exception
         }
 

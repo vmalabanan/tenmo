@@ -17,8 +17,8 @@ public class MainMenuGrid {
     private static final String CHAR_LEFT_RIGHT_BORDER = "|";
     private static final int NUM_SPACES_LEFT_OF_CELL = 5;
     private static final int MIN_SPACES_IN_CELL = 35;
-    private static final String OPTION_1 = "1: View your past transfers";
-    private static final String OPTION_2 = "2: View your pending requests";
+    private static final String OPTION_1 = "1: View all transfers";
+    private static final String OPTION_2 = "2: View pending requests";
     private static final String OPTION_3 = "3: Send TE bucks";
     private static final String OPTION_4 = "4: Request TE bucks";
     private static final String OPTION_5 = "5: Change avatar";
@@ -167,7 +167,10 @@ public class MainMenuGrid {
     }
 
     private static void determineGridSize(User user, BigDecimal balance) {
-        int balanceLength = "Balance: $".length() + balance.toString().length();
+        // to format amount as money
+        NumberFormat n = NumberFormat.getCurrencyInstance();
+
+        int balanceLength = "Balance: ".length() + n.format(balance).length();
         int usernameLength = user.getUsername().length();
 
         // number of spaces in cell should be set to the max of the balance string, username, or min spaces in cell
