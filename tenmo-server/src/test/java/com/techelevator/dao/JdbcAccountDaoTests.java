@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JdbcAccountDaoTests extends BaseDaoTests {
@@ -23,11 +25,12 @@ public class JdbcAccountDaoTests extends BaseDaoTests {
     @Test
     public void getBalance_returns_correct_balance_with_userId() {
         //arrange
-        BigDecimal expectedBalance = BigDecimal.valueOf(1000);
-
+        BigDecimal expectedBalance = BigDecimal.valueOf(1000).setScale(2, RoundingMode.CEILING);
+        System.out.println("expectedBalance: " + expectedBalance);
         //act
         BigDecimal actualBalance = sut.getBalance(ACCOUNT_1.getUserId());
 
+        System.out.println("actualBalance: " + actualBalance);
         //assert
         String message = "Because getBalance should return the correct balance for the given user id.";
         assertEquals(expectedBalance, actualBalance, message);

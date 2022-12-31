@@ -239,7 +239,23 @@ public class TenmoApp
             }
             // if user wants to approve transfer
             else if (option == 1) {
-                transfer.setTransferStatusId(2);
+                // check if transfer amount > balance
+                BigDecimal amount = transfer.getAmount();
+                BigDecimal balance = accountService.getCurrentBalance();
+                try {
+                    if (amount.compareTo(balance) >= 1) {
+                        throw new InsufficientFundsException(amount, balance);
+                    }
+                    else {
+                        transfer.setTransferStatusId(2);
+                    }
+                } catch (InsufficientFundsException e) {
+                    handleException(e);
+                    ViewTransfersPage.pause();
+                    viewTransfers(true);
+                    return;
+                }
+
             }
             // if user wants to reject transfer
             else if (option == 2){
@@ -252,7 +268,7 @@ public class TenmoApp
             // let the user know whether the transfer was successful
             transferOutcomeAlert(transfer);
         }
-        
+
     }
 
     // View the details of an individual transfer.
