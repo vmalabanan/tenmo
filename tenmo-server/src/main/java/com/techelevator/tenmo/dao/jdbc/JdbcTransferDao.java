@@ -279,7 +279,6 @@ public class JdbcTransferDao implements TransferDao
                 }
             }
 
-
         // return true otherwise
         // because the following checks are handled on the client side (with server-side help):
         // userIdFrom != userIdTo -- because client will only allow users to make a transfer to a user that is part of the list sent back by the server, which never includes the current user (JdbcTransferDao's getAllExceptCurrent method)
