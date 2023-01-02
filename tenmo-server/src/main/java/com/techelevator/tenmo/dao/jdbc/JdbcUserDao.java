@@ -23,6 +23,7 @@ public class JdbcUserDao implements UserDao
 {
 
     private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
+    private static final BigDecimal STARTING_BALANCE_FOR_GREGOR = new BigDecimal("10000.00"); // Gregor gets a blessed account with 10x the starting TE bucks!
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcUserDao(JdbcTemplate jdbcTemplate)
@@ -181,7 +182,10 @@ public class JdbcUserDao implements UserDao
         sql = "INSERT INTO account (user_id, balance) values(?, ?)";
         try
         {
-            jdbcTemplate.update(sql, newUserId, STARTING_BALANCE);
+            BigDecimal startBalance = username.equalsIgnoreCase("gregor")
+                                    ? STARTING_BALANCE_FOR_GREGOR // Gregor gets a blessed account with 10x the starting TE bucks!
+                                    : STARTING_BALANCE;
+            jdbcTemplate.update(sql, newUserId, startBalance);
         }
         catch (DataAccessException e)
         {
