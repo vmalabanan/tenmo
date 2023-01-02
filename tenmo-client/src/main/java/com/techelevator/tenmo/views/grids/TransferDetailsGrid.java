@@ -156,38 +156,42 @@ public class TransferDetailsGrid {
     }
 
     private static void determineGridSize(Transfer transfer, int id) {
-            String userFrom = transfer.getUserFrom().getUsername();
-            String userTo = transfer.getUserTo().getUsername();
-            int lengthFromTo = "From: To: ".length();
-            int lengthFor = "For: ".length();
-            int lengthAmount = "Amount: $".length();
-            int lengthStatus = "Status: ".length();
-            int lengthType = "Type: ".length();
-            formattedDate = getFormattedDate(transfer);
+        String userFrom = transfer.getUserFrom().getUsername();
+        String userTo = transfer.getUserTo().getUsername();
+        int lengthFromTo = "From: To: ".length();
+        int lengthFor = "For: ".length();
+        int lengthAmount = "Amount: ".length();
+        int lengthStatus = "Status: ".length();
+        int lengthType = "Type: ".length();
+        formattedDate = getFormattedDate(transfer);
 
-            lengthUsernameFrom = userFrom.length();
-            lengthUsernameTo = userTo.length();
+        // to format amount as money
+        NumberFormat n = NumberFormat.getCurrencyInstance();
+        String formattedAmount = n.format(transfer.getAmount());
 
-            // determine spacing inside cell--max of either padding + max message length OR padding + the Strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces
-            numSpacesInCell = Math.max(NUM_SPACES_PADDING_LEFT_RIGHT * 2 + MAX_LENGTH_MESSAGE, NUM_SPACES_PADDING_LEFT_RIGHT * 2 + lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5);
+        lengthUsernameFrom = userFrom.length();
+        lengthUsernameTo = userTo.length();
 
-            numSpacesBetweenAvatars = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - (AVATAR_WIDTH * 2);
+        // determine spacing inside cell--max of either padding + max message length OR padding + the Strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces
+        numSpacesInCell = Math.max(NUM_SPACES_PADDING_LEFT_RIGHT * 2 + MAX_LENGTH_MESSAGE, NUM_SPACES_PADDING_LEFT_RIGHT * 2 + lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5);
 
-            // if To: usernameTo is less than or equal to avatar width, just set the spacing so that it starts where the userTo avatar starts
-            if (lengthUsernameTo + "To: ".length() <= AVATAR_WIDTH) {
-                numSpacesBetweenUsernames = numSpacesBetweenAvatars + AVATAR_WIDTH - (lengthUsernameFrom + "From: ".length());
-                numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT + AVATAR_WIDTH - (lengthUsernameTo + "To: ".length());
-            }
-            else {
-                numSpacesBetweenUsernames = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - lengthFromTo - lengthUsernameFrom - lengthUsernameTo;
-                numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT;
-            }
+        numSpacesBetweenAvatars = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - (AVATAR_WIDTH * 2);
 
-            numSpacesAfterMessage = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthFor - transfer.getTransferMessage().length();
-            numSpacesAfterAmount = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthAmount - transfer.getAmount().toString().length();
-            numSpacesAfterStatus = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthStatus - transfer.getTransferStatusDesc().length();
-            numSpacesAfterType = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthType - transfer.getTransferTypeDesc().length();
-            numSpacesAfterDate = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - formattedDate.length();
+        // if To: usernameTo is less than or equal to avatar width, just set the spacing so that it starts where the userTo avatar starts
+        if (lengthUsernameTo + "To: ".length() <= AVATAR_WIDTH) {
+            numSpacesBetweenUsernames = numSpacesBetweenAvatars + AVATAR_WIDTH - (lengthUsernameFrom + "From: ".length());
+            numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT + AVATAR_WIDTH - (lengthUsernameTo + "To: ".length());
+        }
+        else {
+            numSpacesBetweenUsernames = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - lengthFromTo - lengthUsernameFrom - lengthUsernameTo;
+            numSpacesAfterUserTo = NUM_SPACES_PADDING_LEFT_RIGHT;
+        }
+
+        numSpacesAfterMessage = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthFor - transfer.getTransferMessage().length();
+        numSpacesAfterAmount = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthAmount - formattedAmount.length();
+        numSpacesAfterStatus = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthStatus - transfer.getTransferStatusDesc().length();
+        numSpacesAfterType = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - lengthType - transfer.getTransferTypeDesc().length();
+        numSpacesAfterDate = numSpacesInCell - NUM_SPACES_PADDING_LEFT_RIGHT - formattedDate.length();
 
         // if transfer is FROM current user, subtract 1 from numSpacesAfterAmount (for - sign)
         if (transfer.getUserFrom().getId() == id) {

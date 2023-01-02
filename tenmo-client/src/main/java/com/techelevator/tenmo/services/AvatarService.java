@@ -35,7 +35,7 @@ public class AvatarService extends AuthenticatedApiService<Avatar> {
         {
             var url = baseUrl + "avatar";
             var entity = makeAuthEntity(avatar);
-            ResponseEntity<Avatar> response = restTemplate.exchange(url, HttpMethod.POST, entity, Avatar.class);
+            ResponseEntity<Avatar> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Avatar.class);
             newAvatar = response.getBody();
         }
         catch(Exception ex)

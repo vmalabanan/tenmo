@@ -11,9 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,18 +28,14 @@ public class JdbcTransferDao implements TransferDao
         this.accountDao = accountDao;
     }
 
-    @Override
-    public Transfer handleTransfer(Transfer transfer, int id)
-    {
-        // if transfer is not valid, set transferStatusId = 3 (rejected) and return the transfer.
-        // Transaction will not be added to the transfer table
-//        if (!isTransferValid(transfer, id)) {
-//            transfer.setTransferStatusId(3);
-//            return transfer;
-//        }
-
+    private Transfer handleTransfer(Transfer transfer, int id) {
         // finish building the transfer object
         buildTransferObject(transfer, id);
+
+        // if transfer is not valid, return null.
+        if (!isTransferValid(transfer, id)) {
+            return null;
+        }
 
         // update transfer table in DB
         return runSqlToUpdateTransferTable(transfer);
@@ -52,6 +45,18 @@ public class JdbcTransferDao implements TransferDao
         //  One argument against setting transferId is that we don't do anything with this info.
         //  But we do need some way to alert the client if the transaction didn't go through.
         //  For example, if transferId == null, throw an exception
+    }
+
+    @Override
+    public Transfer createTransfer(Transfer transfer, int id)
+    {
+       return handleTransfer(transfer, id);
+    }
+
+    @Override
+    public Transfer editTransfer(Transfer transfer, int id)
+    {
+        return handleTransfer(transfer, id);
     }
 
     @Override
@@ -263,32 +268,25 @@ public class JdbcTransferDao implements TransferDao
     }
 
     // helper function
-//    private boolean isTransferValid(Transfer transfer, int id) {
-//        if (transfer.getTransferTypeId() == 1) { // 1 is for requesting
-//            // check if:
-//            // userIdFrom != userIdTo, -- should this validation be done on client side?
-//            // amount > 0, -- should this validation be done on client side?
-//            // userIdFrom is valid
-//            return (id != transfer.getUserFrom().getId()) &&
-//                    (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
-//                    (isUserIdValid(transfer.getUserFrom().getId()));
-//        } else {
-//            // check if:
-//            // userIdFrom != userIdTo,  -- should this validation be done on client side?
-//            // amount > 0,  -- should this validation be done on client side?
-//            // amount <= amount in userIdFrom's account,
-//            // userIdTo is valid
-//            return (id != transfer.getUserTo().getId()) &&
-//                    (transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) &&
-//                    (accountDao.getBalance(id).compareTo(transfer.getAmount()) >= 0) &&
-//                    (isUserIdValid(transfer.getUserTo().getId()));
-//        }
-//
-//    }
+    private boolean isTransferValid(Transfer transfer, int id) {
+        // for Requests where current user = userFrom
+            if (transfer.getUserFrom().getId() == id) {
+                // if transfer is a Send originating from current user
+                // or if transfer is a Request where another user is requesting $ from current user AND the statusID is approved
+                if (transfer.getTransferTypeId() == 2 || transfer.getTransferTypeId() == 1 && transfer.getTransferStatusId() == 2) {
+                    return (transfer.getAmount()
+                                    .compareTo(accountDao.getBalance(id)) <= 0);
+                }
+            }
 
-    // helper function to determine whether there is a matching accountId for userIdTo
-    private boolean isUserIdValid(int userId) {
-        return accountDao.getAccountId(userId) != null;
+
+        // return true otherwise
+        // because the following checks are handled on the client side (with server-side help):
+        // userIdFrom != userIdTo -- because client will only allow users to make a transfer to a user that is part of the list sent back by the server, which never includes the current user (JdbcTransferDao's getAllExceptCurrent method)
+        // userIdFrom is valid -- for all Send requests, the server assigns userIdFrom based on whoever the current logged in user is
+        // amount > 0, -- simple error validation done on client side. No need to send the request to the server side
+        return true;
+
     }
 
     // helper function to finish building the Transfer object.

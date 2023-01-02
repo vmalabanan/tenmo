@@ -34,7 +34,7 @@ public class ColorService extends AuthenticatedApiService<Color> {
         {
             var url = baseUrl + "color";
             var entity = makeAuthEntity(color);
-            ResponseEntity<Color> response = restTemplate.exchange(url, HttpMethod.POST, entity, Color.class);
+            ResponseEntity<Color> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Color.class);
             newColor = response.getBody();
         }
         catch(Exception ex)

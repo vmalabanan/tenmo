@@ -19,7 +19,7 @@ public class TransferGrid {
     private static final int NUM_SPACES_AFTER_ID = 1;
     private static final int NUM_SPACES_BEFORE_AVATAR = 1;
     private static final int NUM_SPACES_AFTER_AVATAR_BEFORE_USERNAME = 3;
-    private static final int NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT = 15;
+    private static final int NUM_SPACES_AFTER_LONGEST_USERNAME_TO_END_OF_AMOUNT = 16;
     private static final int NUM_SPACES_AFTER_AMOUNT = 3;
     private static final int LENGTH_OF_DATE = 6;
     private static final int LENGTH_OF_STATUS = 8;

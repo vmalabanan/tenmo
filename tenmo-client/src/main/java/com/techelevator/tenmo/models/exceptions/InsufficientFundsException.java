@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.models.exceptions;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 public class InsufficientFundsException extends Exception {
     private BigDecimal amount;
@@ -13,7 +14,9 @@ public class InsufficientFundsException extends Exception {
 
     @Override
     public String getMessage(){
+        // to format amount as money
+        NumberFormat n = NumberFormat.getCurrencyInstance();
 
-        return "Amount must be less than or equal to available balance. Available balance: $" + availableBalance + ". Amount entered: $" + amount + ".";
+        return "Transfer amount must be less than or equal to available balance. Available balance: " + n.format(availableBalance) + ". Transfer amount: " + n.format(amount) + ".";
     }
 }

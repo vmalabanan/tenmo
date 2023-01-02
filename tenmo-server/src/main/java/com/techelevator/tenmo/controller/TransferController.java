@@ -4,8 +4,10 @@ import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.models.Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,12 +25,35 @@ public class TransferController {
         this.userDao = userDao;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Transfer handleTransfer(@RequestBody Transfer transfer, Principal principal) {
+    public Transfer createTransfer(@RequestBody Transfer transfer, Principal principal) {
         // get id of logged-in user
         int id = userDao.getIdByUsername(principal.getName());
-        // handle the transfer and return the Transfer object
-        return transferDao.handleTransfer(transfer, id);
+        // handle the transfer
+        // throw exception if transfer is null (i.e., when currentUser balance < transfer amount for Sends originating from current user)
+        // or else return the Transfer object
+        Transfer newTransfer = transferDao.createTransfer(transfer, id);
+        if (newTransfer == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Available balance is less than transfer amount");
+        } else {
+            return newTransfer;
+        }
+    }
+
+    @PutMapping
+    public Transfer editTransfer(@RequestBody Transfer transfer, Principal principal) {
+        // get id of logged-in user
+        int id = userDao.getIdByUsername(principal.getName());
+        // handle the transfer
+        // throw exception if transfer is null (i.e., when currentUser balance < transfer amount for Requests for $ from currentUser )
+        // or else return the Transfer object
+        Transfer newTransfer = transferDao.editTransfer(transfer, id);
+        if (newTransfer == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Available balance is less than transfer amount");
+        } else {
+            return newTransfer;
+        }
     }
 
     @GetMapping

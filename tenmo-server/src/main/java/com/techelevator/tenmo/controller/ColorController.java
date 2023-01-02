@@ -33,7 +33,7 @@ public class ColorController {
         return colorDao.getApplicableColors(user);
     }
 
-    @PostMapping
+    @PutMapping
     public Color changeColor(@RequestBody Color color, Principal principal) {
         int id = userDao.getIdByUsername(principal.getName());
 

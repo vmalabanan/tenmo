@@ -11,7 +11,8 @@ import java.util.Objects;
 
 public class TransferService extends AuthenticatedApiService<Transfer>
 {
-    public Transfer handleTransfer(Transfer transfer)
+    // for new transfers (i.e., new Send or new Request)
+    public Transfer createTransfer(Transfer transfer)
     {
         Transfer newTransfer;
 
@@ -20,6 +21,27 @@ public class TransferService extends AuthenticatedApiService<Transfer>
             var url = baseUrl + "transfer";
             var entity = makeAuthEntity(transfer);
             ResponseEntity<Transfer> response = restTemplate.exchange(url, HttpMethod.POST, entity, Transfer.class);
+            newTransfer = response.getBody();
+        }
+        catch(Exception ex)
+        {
+            newTransfer = null;
+            BasicLogger.log(ex.getMessage());
+        }
+
+        return newTransfer;
+    }
+
+    // for approving/rejecting an existing transfer
+    public Transfer editTransfer(Transfer transfer)
+    {
+        Transfer newTransfer;
+
+        try
+        {
+            var url = baseUrl + "transfer";
+            var entity = makeAuthEntity(transfer);
+            ResponseEntity<Transfer> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Transfer.class);
             newTransfer = response.getBody();
         }
         catch(Exception ex)

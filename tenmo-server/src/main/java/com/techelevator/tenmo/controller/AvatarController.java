@@ -32,7 +32,8 @@ public class AvatarController {
         return avatarDao.getApplicableAvatars(user);
     }
 
-    @PostMapping
+
+    @PutMapping
     public Avatar changeAvatar(@RequestBody Avatar avatar, Principal principal) {
         int id = userDao.getIdByUsername(principal.getName());
 

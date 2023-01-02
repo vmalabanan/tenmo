@@ -263,7 +263,7 @@ public class TenmoApp
             }
 
             // send transfer request to the server
-            Transfer newTransfer = transferService.handleTransfer(transfer);
+            Transfer newTransfer = transferService.editTransfer(transfer);
 
             // let the user know whether the transfer was successful
             transferOutcomeAlert(transfer);
@@ -458,8 +458,8 @@ public class TenmoApp
         }
 
         // create the transfer object and send to the server side
-        Transfer transfer = MakeTransferPage.createTransferObject(user, amount, message,transferType);
-        Transfer newTransfer = transferService.handleTransfer(transfer);
+        Transfer transfer = MakeTransferPage.createTransferObject(user, amount, message, transferType);
+        Transfer newTransfer = transferService.createTransfer(transfer);
 
         // let the user know whether the transfer was successful
         transferOutcomeAlert(newTransfer);
