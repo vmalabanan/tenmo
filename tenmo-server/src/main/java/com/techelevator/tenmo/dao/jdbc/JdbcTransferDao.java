@@ -22,7 +22,7 @@ public class JdbcTransferDao implements TransferDao
     private AccountDao accountDao;
 
     @Autowired
-    public JdbcTransferDao(JdbcTemplate jdbcTemplate)
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao)
     {
         this.jdbcTemplate = jdbcTemplate;
         this.accountDao = accountDao;

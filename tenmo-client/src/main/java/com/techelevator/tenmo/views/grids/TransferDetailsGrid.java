@@ -175,8 +175,8 @@ public class TransferDetailsGrid {
         lengthMessage = transfer.getTransferMessage().length();
 
         // determine spacing inside cell--max of padding plus:
-        // max message length, OR
-        // the strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces, OR
+        // max message length (basically, this sets minimum spacing in case the actual message length or usernameTo/usernameFrom are short), OR
+        // the strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces (to give space in between), OR
         // the string "For: <message>"
         numSpacesInCell = Math.max(MAX_LENGTH_MESSAGE,
                           Math.max(lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5,
