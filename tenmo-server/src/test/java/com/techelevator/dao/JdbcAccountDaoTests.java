@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.jdbc.JdbcAccountDao;
 import com.techelevator.tenmo.models.Account;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,18 +27,28 @@ public class JdbcAccountDaoTests extends BaseDaoTests {
     public void getBalance_returns_correct_balance_with_userId() {
         //arrange
         BigDecimal expectedBalance = BigDecimal.valueOf(1000).setScale(2, RoundingMode.CEILING);
-        System.out.println("expectedBalance: " + expectedBalance);
+
         //act
         BigDecimal actualBalance = sut.getBalance(ACCOUNT_1.getUserId());
 
-        System.out.println("actualBalance: " + actualBalance);
         //assert
         String message = "Because getBalance should return the correct balance for the given user id.";
         assertEquals(expectedBalance, actualBalance, message);
 
-//        Assert.assertEquals(ACCOUNT_1.getBalance(), actualBalance);
-
     }
+
+//    @Test
+//    public void getBalance_returns_null_when_userId_not_found() {
+//        //arrange
+//        BigDecimal expectedBalance = null;
+//
+//        //act
+//        BigDecimal actualBalance = sut.getBalance(3000);
+//
+//        //assert
+//        String message= "Because there is no userId so getBalance should return null";
+//        assertEquals(expectedBalance, actualBalance, message);
+//    }
 
     @Test
     public void getAccountId_returns_correct_accountId_with_userId() {
@@ -52,6 +63,19 @@ public class JdbcAccountDaoTests extends BaseDaoTests {
         assertEquals(expectedAccountId, actualAccountId, message);
     }
 
+    @Test
+    public void getAccountId_returns_null_when_userId_not_found() {
+
+        //arrange
+        Integer expectedAccountId = null;
+
+        //act
+        Integer actualAccountId = sut.getAccountId(3000);
+
+        //assert
+        String message = "Because there is no userId so accountId should return null";
+        assertEquals(expectedAccountId, actualAccountId, message);
+    }
 
 
 
