@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.jdbc.JdbcAccountDao;
 import com.techelevator.tenmo.dao.jdbc.JdbcTransferDao;
 import com.techelevator.tenmo.models.Transfer;
@@ -12,11 +13,14 @@ public class JdbcTransferDaoTests extends BaseDaoTests {
 //    private static final Transfer TRANSFER_1 = new Transfer
 
     private JdbcTransferDao sut;
+    private AccountDao accountDao;
 
     @Before
     public void setup(){
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        sut = new JdbcTransferDao(jdbcTemplate);
+        accountDao = new JdbcAccountDao(jdbcTemplate);
+
+        sut = new JdbcTransferDao(jdbcTemplate, accountDao);
     }
 
     @Test
