@@ -19,7 +19,7 @@ public class JdbcTransferDao implements TransferDao
 {
 
     private final JdbcTemplate jdbcTemplate;
-    private AccountDao accountDao;
+    private final AccountDao accountDao;
 
     @Autowired
     public JdbcTransferDao(JdbcTemplate jdbcTemplate, AccountDao accountDao)
