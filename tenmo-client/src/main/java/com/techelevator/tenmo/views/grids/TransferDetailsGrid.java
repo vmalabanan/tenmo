@@ -25,6 +25,7 @@ public class TransferDetailsGrid {
     private static int numSpacesInCell;
     private static int lengthUsernameFrom;
     private static int lengthUsernameTo;
+    private static int lengthMessage;
     private static int numSpacesBetweenAvatars;
     private static int numSpacesBetweenUsernames;
     private static int numSpacesAfterMessage;
@@ -171,9 +172,18 @@ public class TransferDetailsGrid {
 
         lengthUsernameFrom = userFrom.length();
         lengthUsernameTo = userTo.length();
+        lengthMessage = transfer.getTransferMessage().length();
 
-        // determine spacing inside cell--max of either padding + max message length OR padding + the Strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces
-        numSpacesInCell = Math.max(NUM_SPACES_PADDING_LEFT_RIGHT * 2 + MAX_LENGTH_MESSAGE, NUM_SPACES_PADDING_LEFT_RIGHT * 2 + lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5);
+        // determine spacing inside cell--max of padding plus:
+        // max message length, OR
+        // the strings "From: <usernameFrom>" and "To: <usernameTo>" + 5 spaces, OR
+        // the string "For: <message>"
+        numSpacesInCell = Math.max(MAX_LENGTH_MESSAGE,
+                          Math.max(lengthFromTo + lengthUsernameFrom + lengthUsernameTo + 5,
+                                   lengthFor + lengthMessage));
+
+        // add padding to number of spaces inside cell
+        numSpacesInCell += NUM_SPACES_PADDING_LEFT_RIGHT * 2;
 
         numSpacesBetweenAvatars = numSpacesInCell - (NUM_SPACES_PADDING_LEFT_RIGHT * 2) - (AVATAR_WIDTH * 2);
 
